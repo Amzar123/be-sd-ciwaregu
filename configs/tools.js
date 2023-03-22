@@ -18,7 +18,6 @@ module.exports = function(MODULES, CONSTANTS, callback) {
      */
     function loadToolsAndDatabase(callback) {
         console.time('Loading app tools and database');
-        const {Kafka} = MODULES.KAFKA;
         const {transports, createLogger, format} = MODULES.WINSTON;
         const {combine, timestamp, json, errors} = format;
 
@@ -80,39 +79,6 @@ module.exports = function(MODULES, CONSTANTS, callback) {
                 }),
             ],
         });
-
-        // Initialize mongoose (Mongoose)
-        TOOLS.SCHEMA = require(CONSTANTS.PATH.SCHEMA_LOADER)(MODULES, CONSTANTS);
-
-        // Initialize Elasticsearch
-        TOOLS.ELASTIC_CLIENT = require(CONSTANTS.PATH.ELASTIC_CLIENT)(MODULES, CONSTANTS);
-
-        // Initialize Redis database
-        TOOLS.REDIS_CLIENT = require(CONSTANTS.PATH.REDIS_CLIENT)(MODULES);
-        TOOLS.REDIS_CREATOR = () => require(CONSTANTS.PATH.REDIS_CLIENT)(MODULES);
-
-        // Initialize Kafka
-        const {KAFKA} = CONSTANTS.VARIABLE;
-
-        TOOLS.KAFKA_CLIENT = new Kafka({
-            clientId: KAFKA.ID,
-            brokers: [`${KAFKA.HOST}:${KAFKA.PORT}`],
-        });
-
-        TOOLS.KAFKA_PRODUCER = TOOLS.KAFKA_CLIENT.producer();
-
-        // Initialize Event
-        const {EventEmitter} = MODULES.EVENT;
-        TOOLS.EVENT = new EventEmitter();
-
-        TOOLS.KAFKA_PRODUCER.connect()
-            .then(() => {
-                console.timeEnd('Loading app tools and database');
-                callback(null, TOOLS);
-            })
-            .catch((err) => {
-                throw err;
-            });
     }
 
     /**

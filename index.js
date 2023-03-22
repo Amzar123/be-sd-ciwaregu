@@ -1,7 +1,6 @@
 'use strict';
 
 console.time('Total application preparation time');
-const moduleAsync = require('async');
 
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
@@ -27,8 +26,10 @@ function initiateTools(callback) {
 // STARTING APPLICATION SERVER (Express, RPC, etc)
 // eslint-disable-next-line require-jsdoc
 function initiateAppServers(err, tools) {
+    console.log('ga dipanggil atuh');
     if (err) {
         throw err;
+        console.log('kena error loh');
     } else {
         console.timeEnd('Total application preparation time');
 
@@ -38,4 +39,4 @@ function initiateAppServers(err, tools) {
 }
 
 // DOING ASYNC.waterfall BECAUSE SEVERAL PROCESS NEEDS BLOCKING PROCESSING
-moduleAsync.waterfall([initiateTools], initiateAppServers);
+MODULES.ASYNC.waterfall([initiateTools], initiateAppServers);
