@@ -1,42 +1,31 @@
-'use strict';
+const express = require('express');
+const bodyParser = require('body-parser');
+const app = express();
+const port = process.env.PORT || 3000;
+const programmingLanguagesRouter = require('./src/routes/programmingLanguages.route');
 
-console.time('Total application preparation time');
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
+app.get('/', (req, res) => {
+  res.json({'message': 'ok'});
+})
 
-// LOAD APPLICATION'S CONSTANTS
-console.time('Loading app constants');
-const CONSTANTS = require('./configs/constants');
-const {PATH} = CONSTANTS;
-console.timeEnd('Loading app constants');
+app.use('/programming-languages', programmingLanguagesRouter);
 
-// DEFINE ALL MODULES
-console.time('Loading app modules');
-const MODULES = require(PATH.APPLICATION_MODULES);
-console.timeEnd('Loading app modules');
+/* Error handler middleware */
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  console.error(err.message, err.stack);
+  res.status(statusCode).json({'message': err.message});
+  
+  return;
+});
 
-// INITIALIZE TOOLS, LIBRARIES AND WHOLE APPLICATION
-// eslint-disable-next-line require-jsdoc
-function initiateTools(callback) {
-    require(PATH.APPLICATION_TOOLS)(MODULES, CONSTANTS, callback);
-}
-
-// STARTING APPLICATION SERVER (Express, RPC, etc)
-// eslint-disable-next-line require-jsdoc
-function initiateAppServers(err, tools) {
-    console.log('ga dipanggil atuh');
-    if (err) {
-        throw err;
-        console.log('kena error loh');
-    } else {
-        console.timeEnd('Total application preparation time');
-
-        // Initialize express server
-        require(PATH.EXPRESS_SERVER)(tools, MODULES, CONSTANTS);
-    }
-}
-
-// DOING ASYNC.waterfall BECAUSE SEVERAL PROCESS NEEDS BLOCKING PROCESSING
-MODULES.ASYNC.waterfall([initiateTools], initiateAppServers);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Example app listening at http://localhost:${port}`)
+});
