@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const port = 3000;
-const { nanoid } = require('nanoid')
+const { v4: uuidv4 } = require('uuid');
 
 // Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 app.use(bodyParser.json());
@@ -16,7 +16,7 @@ app.post('/v1/galleries', (req, res) => {
 
   // Generate ID
   // const id = 1;
-  const id = nanoid(16);
+  const id = uuidv4();
 
   // Create the new gallery object
   const newGallery = {
@@ -34,7 +34,14 @@ app.post('/v1/galleries', (req, res) => {
   // jika sukses = true
   if (isSuccess) {
     
-    return res.status(201).json({ message: 'Gallery created successfully', gallery: newGallery });
+    return res.status(201).json({
+      status: "success",
+      message: 'Gallery created successfully',
+      data:
+      {
+        galleryId: id 
+      }
+    });
   }
 
   // Return a success response to the client with the newly created gallery object
@@ -60,7 +67,12 @@ app.get('/v1/galleries', (req, res) => {
   }));
 
   // Return the mapped galleries in the response
-  return res.status(200).json({ status: 'Success', galleries: mappedGalleries });
+  return res.status(200).json({
+    status: 'Success',
+    data: {
+      galleries: mappedGalleries
+    }
+  });
 });
 
 // Start the server
