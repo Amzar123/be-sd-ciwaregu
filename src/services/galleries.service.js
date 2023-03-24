@@ -3,9 +3,9 @@ const helper = require('../utils/helper.util');
 const config = require('../configs/general.config');
 const { v4: uuidv4 } = require('uuid');
 
-const galleries = []
+const dataGalleries = []
 
-async function getMultiple(page = 1){
+async function getMultiple(query){
   // const offset = helper.getOffset(page, config.listPerPage);
   // const rows = await db.query(
   //   `SELECT id, name, released_year, githut_rank, pypl_rank, tiobe_rank 
@@ -19,6 +19,30 @@ async function getMultiple(page = 1){
   //   data,
   //   meta
   // }
+
+  // Check if there is a query parameter for filtering by title
+  const { title, imageUrl, description } = query;
+
+  // Filter galleries by title if the query parameter exists
+  const filteredGalleries = title
+    ? dataGalleries.filter(gallery => gallery.title.includes(title))
+    : dataGalleries;
+
+  // Map the galleries to the desired response format
+  const galleries = filteredGalleries.map(gallery => ({
+    id: gallery.id,
+    title: gallery.title,
+    imageUrl: gallery.imageUrl,
+    description: gallery.description
+  }));
+
+  // Return the mapped galleries in the response
+  return {
+    status: "success", 
+    code : 200,
+    message : 'Fetching galleries successfully!',
+    data : { galleries }
+ }
 }
 
 async function create(gallery){
@@ -44,15 +68,31 @@ async function create(gallery){
   
   const { title, imageUrl, description } = gallery
   
-  let status = false;
-
+  // Error message
   if (!title || !imageUrl || !description) {
+    let message = ""
+    
+    if (!title ) {
+      message += ", title"
+    }
+    
+    if (!imageUrl) {
 
-    return status
+      message += ", imageUrl"
+    }
+
+    if (!description) {
+      message += ", description"
+    }
+  
+    return { 
+      status: 'Failed',
+      code: 400,
+      message: `Failed creating gallery${message} is empty!`
+    }
   }
-
-  // Generate ID
-  // const id = 1;
+  
+  // Generate ID, timestamp
   const id = uuidv4()
   const createdAt = new Date().toISOString()
   const updatedAt = createdAt
@@ -67,18 +107,19 @@ async function create(gallery){
     updatedAt
   };
 
-  galleries.push(newGallery)
+  dataGalleries.push(newGallery)
 
-  // sukses jika array books bertambah
-  const isSuccess = galleries.filter((gallery) => gallery.id === id).length > 0;
-
-  // jika sukses = true
-  if (isSuccess) {
-
-    status = true;
-    return {status, newGallery}
+  return {
+    status: "success",
+    code : 201,
+    message : 'Gallery created successfully!',
+    data : { 
+      galleryId: id,
+      title: title,
+      imageUrl: imageUrl,
+      description: description
+    }
   }
-
 }
 
 module.exports = {
