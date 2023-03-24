@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 // app.use('/programming-languages', programmingLanguagesRouter);
 
-app.use('/galleries', galleriesRouter);
+app.use('/v1/galleries', galleriesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

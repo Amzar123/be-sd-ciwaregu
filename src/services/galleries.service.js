@@ -1,123 +1,105 @@
-const db = require('./db.service');
-const helper = require('../utils/helper.util');
-const config = require('../configs/general.config');
+const pool = require("../configs/db.config")
 const { v4: uuidv4 } = require('uuid');
 
-const dataGalleries = []
-
 async function getMultiple(query){
-  // const offset = helper.getOffset(page, config.listPerPage);
-  // const rows = await db.query(
-  //   `SELECT id, name, released_year, githut_rank, pypl_rank, tiobe_rank 
-  //   FROM programming_languages LIMIT ?,?`, 
-  //   [offset, config.listPerPage]
-  // );
-  // const data = helper.emptyOrRows(rows);
-  // const meta = {page};
+  
+  const { title, imageUrl, Description } = query;
 
-  // return {
-  //   data,
-  //   meta
-  // }
+  try {
+    const { rows } = await pool.query('SELECT * FROM galleries');
 
-  // Check if there is a query parameter for filtering by title
-  const { title, imageUrl, description } = query;
+    // Filter galleries by title if the query parameter exists
+    const filteredGalleries = title
+    ? rows.filter(gallery => gallery.title.includes(title))
+    : rows;
 
-  // Filter galleries by title if the query parameter exists
-  const filteredGalleries = title
-    ? dataGalleries.filter(gallery => gallery.title.includes(title))
-    : dataGalleries;
+    // Map the galleries to the desired response format
+    const galleries = filteredGalleries.map(gallery => ({
+      id: gallery.id,
+      title: gallery.title,
+      imageUrl: gallery.imageurl,
+      description: gallery.description,
+      createdAt: gallery.createdat,
+      updatedAt: gallery.updatedat
+    }));
 
-  // Map the galleries to the desired response format
-  const galleries = filteredGalleries.map(gallery => ({
-    id: gallery.id,
-    title: gallery.title,
-    imageUrl: gallery.imageUrl,
-    description: gallery.description
-  }));
-
-  // Return the mapped galleries in the response
-  return {
-    status: "success", 
-    code : 200,
-    message : 'Fetching galleries successfully!',
-    data : { galleries }
- }
+    // Return the mapped galleries in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Fetching galleries successfully!',
+      data : galleries
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error fetching galleries!'
+    }
+  }
 }
 
 async function create(gallery){
-  // const result = await db.query(
-  //   `INSERT INTO programming_languages 
-  //   (name, released_year, githut_rank, pypl_rank, tiobe_rank) 
-  //   VALUES 
-  //   (?, ?, ?, ?, ?)`, 
-  //   [
-  //     programmingLanguage.name, programmingLanguage.released_year,
-  //     programmingLanguage.githut_rank, programmingLanguage.pypl_rank,
-  //     programmingLanguage.tiobe_rank
-  //   ]
-  // );
 
-  // let message = 'Error in creating gallery';
+  try {
+    const { title, imageUrl, description } = gallery
 
-  // if (result.affectedRows) {
-  //   message = 'Gallery created successfully';
-  // }
+    // Error message
+    if (!title || !imageUrl || !description) {
+      let message = ""
+      
+      if (!title ) {
+        message += ", title"
+      }
+      
+      if (!imageUrl) {
 
-  // return {message};
-  
-  const { title, imageUrl, description } = gallery
-  
-  // Error message
-  if (!title || !imageUrl || !description) {
-    let message = ""
+        message += ", imageUrl"
+      }
+
+      if (!description) {
+        message += ", description"
+      }
     
-    if (!title ) {
-      message += ", title"
+      return { 
+        status: 'Failed',
+        code: 400,
+        message: `Failed creating gallery${message} is empty!`
+      }
     }
     
-    if (!imageUrl) {
+    // Generate ID, timestamp
+    const id = uuidv4()
+    const createdAt = new Date().toISOString()
+    const updatedAt = createdAt
+    
+    await pool.query(
+      'INSERT INTO galleries (id, title, imageurl, description, createdat, updatedat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
+      [id, title, imageUrl, description, createdAt, updatedAt]
+    );
 
-      message += ", imageUrl"
+
+    // Return the mapped galleries in the response
+    return {
+      status: "success",
+      code : 201,
+      message : 'Gallery created successfully!',
+      data : { 
+        galleryId: id,
+        title: title,
+        imageUrl: imageUrl,
+        description: description
+      }
     }
-
-    if (!description) {
-      message += ", description"
-    }
-  
-    return { 
-      status: 'Failed',
-      code: 400,
-      message: `Failed creating gallery${message} is empty!`
-    }
-  }
-  
-  // Generate ID, timestamp
-  const id = uuidv4()
-  const createdAt = new Date().toISOString()
-  const updatedAt = createdAt
-
-  // Create the new gallery object
-  const newGallery = {
-    id,
-    title,
-    imageUrl,
-    description,
-    createdAt,
-    updatedAt
-  };
-
-  dataGalleries.push(newGallery)
-
-  return {
-    status: "success",
-    code : 201,
-    message : 'Gallery created successfully!',
-    data : { 
-      galleryId: id,
-      title: title,
-      imageUrl: imageUrl,
-      description: description
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error creating gallery!'
     }
   }
 }
