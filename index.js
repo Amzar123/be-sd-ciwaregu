@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
-const programmingLanguagesRouter = require('./src/routes/programmingLanguages.route');
+const galleriesRouter = require('./src/routes/galleries.route');
 
 app.use(bodyParser.json());
 app.use(
@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
   res.json({'message': 'ok'});
 })
 
-app.use('/programming-languages', programmingLanguagesRouter);
+app.use('/v1/galleries', galleriesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {
