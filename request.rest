@@ -1,0 +1,14 @@
+GET http://localhost:3000/users
+
+### 
+POST  http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "name": "user",
+  "email": "asdfgh45@gmail.com",
+  "password": "password",
+  "confirmPassword": "password",
+  "address": "bandung",
+  "birthDate": "2022-02-22"
+}
