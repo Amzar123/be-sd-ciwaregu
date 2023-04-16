@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import Users from "../models/UserModel.js";
 import ResponseClass from "../models/Response.js";
+import { Users, validatePassword } from "../models/UserModel.js";
 
 async function getUsers(){
     try {
@@ -15,13 +15,39 @@ async function registerUsers(requestBody){
     var responseError = new ResponseClass.ErrorResponse()
     var responseSuccess = new ResponseClass.SuccessResponse()
 
-    if (requestBody.password !== requestBody.confirmPassword) {
+    //SELECT ... where email = requesbody.email LIMIT 1
+    const emailRegistered = await Users.findOne({
+        where: { email: requestBody.email}
+    })
 
-        responseError.status = "Failed";
-        responseError.code = 400;
-        responseError.message = "Password and Confirm Password not match"
-
+    const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    const passValidation = validatePassword(requestBody.email, false)
+    
+    if (emailRegistered !== null) {
+        
+        responseError.message = "Email has been registered"
         return responseError
+        
+    }else if(emailRegexp.test(requestBody.email) == false){
+
+        responseError.message = "Email is invalid"
+        return responseError
+
+    }else if(!requestBody.email || !requestBody.password){
+        
+        responseError.message = "Email or Password missing"
+        return responseError
+
+    }else if(passValidation == false){
+
+        responseError.message = validatePassword(requestBody.email, true)
+        return responseError
+
+    }else if (requestBody.password !== requestBody.confirmPassword) {
+
+        responseError.message = "Password and Confirm Password not match"
+        return responseError
+
     }else{
         const salt = await bcrypt.genSalt();
         const hashPass = await bcrypt.hash(requestBody.password, salt);
@@ -34,8 +60,6 @@ async function registerUsers(requestBody){
                 birthDate: requestBody.birthDate,
             });
 
-            responseSuccess.status = "Success";
-            responseSuccess.code = 200;
             responseSuccess.message = "Register Sucess"
             responseSuccess.data = {
                 name: requestBody.name,
@@ -47,7 +71,6 @@ async function registerUsers(requestBody){
         } catch (error){
             console.log(error)
             
-            responseError.status = "Failed";
             responseError.code = 500;
             responseError.message = error
             

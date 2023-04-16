@@ -6,9 +6,9 @@ Content-Type: application/json
 
 {
   "name": "user",
-  "email": "asdfgh45@gmail.com",
-  "password": "password",
-  "confirmPassword": "password",
+  "email": "asdfgh@gmail.com",
+  "password": "Password",
+  "confirmPassword": "Password",
   "address": "bandung",
   "birthDate": "2022-02-22"
 }

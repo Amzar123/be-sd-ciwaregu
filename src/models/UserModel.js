@@ -1,9 +1,10 @@
 import { Sequelize } from "sequelize";
 import db from '../configs/db.config.js';
+import PasswordValidator from "password-validator";
 
 const { DataTypes } = Sequelize;
 
-const Users = db.define('users_auth', {
+export const Users = db.define('users_auth', {
     name:{
         type: DataTypes.STRING
     },
@@ -11,6 +12,9 @@ const Users = db.define('users_auth', {
         type: DataTypes.STRING
     },
     password:{
+        type: DataTypes.STRING
+    },
+    imageUrl:{
         type: DataTypes.STRING
     },
     address:{
@@ -26,5 +30,18 @@ const Users = db.define('users_auth', {
     freezeTableName: true
 });
 
+export const validatePassword = (userEmail, showDetails) => {
+    const schema = new PasswordValidator();
+    schema
+    .is().min(6)
+    .has().uppercase()
+    .has().lowercase()
+    .has().digits(2)    
+    .has().not().spaces() 
 
-export default Users;
+    if(showDetails){
+        return schema.validate(userEmail, {details: true});
+    }else{
+        return schema.validate(userEmail);
+    }
+}

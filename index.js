@@ -1,6 +1,6 @@
 import express from "express";
 import db from './src/configs/db.config.js';
-import Users from './src/models/UserModel.js';
+import { Users } from './src/models/UserModel.js';
 import router from "./src/routes/index.js";
 import bodyParser from "body-parser";
 
@@ -18,7 +18,7 @@ try {
   await db.authenticate();
   console.log('Database Connected....');
 
-  await Users.sync();    //optional create users table using schema
+  // await Users.sync();    //optional create users table using schema
 } catch (error) {
   console.error(error); 
 }
