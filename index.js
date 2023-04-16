@@ -3,6 +3,8 @@ import db from './src/configs/db.config.js';
 import { Users } from './src/models/UserModel.js';
 import router from "./src/routes/index.js";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
