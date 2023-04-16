@@ -16,6 +16,7 @@ app.use(
   })
 );
 
+//connect to database
 try {
   await db.authenticate();
   console.log('Database Connected....');

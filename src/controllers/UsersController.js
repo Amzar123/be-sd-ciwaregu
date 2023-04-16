@@ -1,6 +1,7 @@
 import UsersService from "../services/UsersService.js";
 import ResponseClass from "../models/Response.js";
 
+//get all users function
 export const get = async(req, res) => {
     try {
         const users = await UsersService.getUsers();
@@ -10,6 +11,7 @@ export const get = async(req, res) => {
     }
 }
 
+//register function
 export const register = async(req, res) =>  {
     try {
         res.json(await UsersService.registerUsers(req.body));
@@ -18,17 +20,22 @@ export const register = async(req, res) =>  {
     }
 }
 
+//login function
 export const login = async(req, res) => {
     try {
         var loginResult = await UsersService.loginUsers(req.body);
+
+        //if login result is success
         if (loginResult.code == 200) {
             var responseSuccess = new ResponseClass.SuccessResponse()
 
+            //return response cookie with refresh_token
             res.cookie('refreshToken', loginResult.refresh_token, {
                 httpOnly: true,
                 maxAge: 24 * 60 * 60 * 1000
             });
-    
+            
+            //return response
             responseSuccess.message = "Login Success"
             responseSuccess.data = {
                 object: "authentication_token",

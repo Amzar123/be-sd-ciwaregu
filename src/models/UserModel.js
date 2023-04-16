@@ -4,6 +4,7 @@ import PasswordValidator from "password-validator";
 
 const { DataTypes } = Sequelize;
 
+//Users attribute database schema
 export const Users = db.define('users_auth', {
     name:{
         type: DataTypes.STRING
@@ -30,6 +31,7 @@ export const Users = db.define('users_auth', {
     freezeTableName: true
 });
 
+//validate password user schema using password-validator package
 export const validatePassword = (userEmail, showDetails) => {
     const schema = new PasswordValidator();
     schema
