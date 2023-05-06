@@ -1,8 +1,9 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
+import express from 'express';
+import bodyParser  from 'body-parser';
+import router from './src/routes/index.js';
+
 const port = process.env.PORT || 3000;
-const galleriesRouter = require('./src/routes/galleries.route');
+const app = express();
 
 app.use(bodyParser.json());
 app.use(
@@ -15,7 +16,9 @@ app.get('/', (req, res) => {
   res.json({'message': 'ok'});
 })
 
-app.use('/v1/galleries', galleriesRouter);
+app.use(router);
+
+// app.use('/v1/galleries', galleriesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

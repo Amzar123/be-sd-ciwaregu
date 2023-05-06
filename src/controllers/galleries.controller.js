@@ -1,9 +1,9 @@
-const galleries = require('../services/galleries.service');
+import galleries from "../services/galleries.service.js";
 
-async function create(req, res, next) {
+export const create = async (req, res, next) => {
   try {
     // Create data to DB
-    const data = await galleries.create(req.body);
+    const data = await galleries.createGalleries(req.body);
     // if Return "Created / 201"
     if (data.code === 201)
     {
@@ -17,8 +17,3 @@ async function create(req, res, next) {
     next(err);
   }
 }
-
-// eksport module
-module.exports = {
-  create
-};

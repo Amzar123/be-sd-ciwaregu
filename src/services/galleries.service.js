@@ -1,16 +1,16 @@
-const pool = require("../configs/db.config")
-const { v4: uuidv4 } = require('uuid');
+// import { query } from "../configs/db.config.js";
+import { v4 as uuidv4 } from 'uuid';
+import { Galleries } from "../models/galleries.model.js";
 
-async function create(gallery){
+async function createGalleries(responseBody){
 
-  try {
-    // Get request Body
-    const { title, imageUrl, description } = gallery
-
-    // Error message
-    if (!title || !imageUrl || !description) {
-      let message = ""
-      
+  // Get request Body
+  const { title, imageUrl, description } = responseBody
+  
+  // Error message
+  if (!title || !imageUrl || !description) {
+    let message = ""
+    
       if (!title ) {
         message += ", title"
       }
@@ -31,30 +31,30 @@ async function create(gallery){
       }
     }
     
-    // Generate ID, timestamp
-    const id = uuidv4()
-    const createdAt = new Date().toISOString()
-    const updatedAt = createdAt
-    
-    // INSERT into galleries
-    await pool.query(
-      'INSERT INTO galleries (id, title, imageurl, description, createdat, updatedat) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', 
-      [id, title, imageUrl, description, createdAt, updatedAt]
-    );
+    try {
 
-
-    // Return the galleries in the response
-    return {
-      status: "success",
-      code : 201,
-      message : 'Gallery created successfully!',
-      data : { 
-        galleryId: id,
+      // Create new gallery record using the Galleries model
+      const newGallery = await Galleries.create({
+        id: uuidv4(),
         title: title,
         imageUrl: imageUrl,
-        description: description
+        description: description,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      // Return the newly created gallery in the response
+      return {
+        status: "success",
+        code: 201,
+        message: 'Gallery created successfully!',
+        data: {
+          galleryId: newGallery.id,
+          title: newGallery.title,
+          imageUrl: newGallery.imageUrl,
+          description: newGallery.description
+        }
       }
-    }
     
   } catch (err) {
     console.error(err);
@@ -66,6 +66,6 @@ async function create(gallery){
   }
 }
 
-module.exports = {
-  create
+export default {
+  createGalleries
 }
