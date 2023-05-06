@@ -1,33 +1,36 @@
-const pool = require("../configs/db.config")
+const { Op } = require('sequelize');
+const Galleries = require("../models/galleries.model");
 
 async function getMultiple(query){
   
-  const { title, imageUrl, Description } = query;
+  const { title, imageUrl, description } = query;
 
   try {
-    const { rows } = await pool.query('SELECT * FROM galleries');
 
-    // Filter galleries by title if the query parameter exists
-    const filteredGalleries = title
-    ? rows.filter(gallery => gallery.title.includes(title))
-    : rows;
+    const whereClause = {};
 
-    // Map the galleries to the desired response format
-    const galleries = filteredGalleries.map(gallery => ({
-      id: gallery.id,
-      title: gallery.title,
-      imageUrl: gallery.imageurl,
-      description: gallery.description,
-      createdAt: gallery.createdat,
-      updatedAt: gallery.updatedat
-    }));
+    if (title) {
+      whereClause.title = {
+        [Op.iLike]: `%${title}%`, // use case-insensitive LIKE operator
+      };
+    }
+    if (imageUrl) {
+      whereClause.imageUrl = imageUrl;
+    }
+    if (description) {
+      whereClause.description = {
+        [Op.iLike]: `%${description}%`, // use case-insensitive LIKE operator
+      };
+    }
+
+    const dbResult = await Galleries.findAll({ where: whereClause });
 
     // Return the mapped galleries in the response
     return {
       status: "success", 
       code : 200,
       message : 'Fetching galleries successfully!',
-      data : galleries
+      data : dbResult
     }
     
   } catch (err) {
