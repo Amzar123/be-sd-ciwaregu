@@ -16,4 +16,11 @@ const db = new Sequelize('be-sd-ciwaregu', 'postgres', 'arz140701', {
   dialect: 'postgres'
 });
 
-module.exports = db;
+// import { Sequelize } from "sequelize";
+
+// const db = new Sequelize('db_sdciwaregu', 'root', '',{
+//     host: "localhost",
+//     dialect: "mysql"
+// });
+
+export default db;
