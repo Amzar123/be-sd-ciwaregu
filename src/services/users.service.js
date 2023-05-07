@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
-import ResponseClass from "../models/Response.js";
-import { Users, validatePassword } from "../models/UserModel.js";
+import ResponseClass from "../models/response.model.js";
+import { Users, validatePassword } from "../models/users.model.js";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
 
 //get all users function
 async function getUsers(){
@@ -66,6 +67,7 @@ async function registerUsers(requestBody){
                         try {
                             //add user to database
                             await Users.create({
+                                id: uuidv4(),
                                 name: requestBody.name,
                                 email: requestBody.email,
                                 password: hashPass,

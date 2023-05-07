@@ -35,7 +35,7 @@ export const Users = db.define('users_auth', {
 export const validatePassword = (userEmail, showDetails) => {
     const schema = new PasswordValidator();
     schema
-    .is().min(6)
+    .is().min(8)
     .has().uppercase()
     .has().lowercase()
     .has().digits(2)    

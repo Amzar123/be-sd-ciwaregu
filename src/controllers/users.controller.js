@@ -1,8 +1,8 @@
-import UsersService from "../services/UsersService.js";
-import ResponseClass from "../models/Response.js";
+import UsersService from "../services/users.service.js";
+import ResponseClass from "../models/response.model.js";
 
 //get all users function
-export const get = async(req, res) => {
+const get = async(req, res) => {
     try {
         const users = await UsersService.getUsers();
         res.json(users);
@@ -12,7 +12,7 @@ export const get = async(req, res) => {
 }
 
 //register function
-export const register = async(req, res) =>  {
+const register = async(req, res) =>  {
     try {
         res.json(await UsersService.registerUsers(req.body));
     }catch(error){
@@ -21,7 +21,7 @@ export const register = async(req, res) =>  {
 }
 
 //login function
-export const login = async(req, res) => {
+const login = async(req, res) => {
     try {
         var loginResult = await UsersService.loginUsers(req.body);
 
@@ -52,4 +52,10 @@ export const login = async(req, res) => {
     } catch (error) {
         console.log(error);
     }
+}
+
+export default {
+    get,
+    login,
+    register
 }

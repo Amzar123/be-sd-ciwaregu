@@ -1,15 +1,19 @@
 import express from "express";
-import { get, register, login } from "../controllers/UsersController.js";
 import { verifyToken } from "../middlewares/VerifyToken.js";
-import { create } from '../controllers/galleries.controller.js';
+
+// import controller
+import usersController from "../controllers/users.controller.js";
+import galleriesController from '../controllers/galleries.controller.js';
 
 const router =  express.Router();
 
-router.get('/users', verifyToken, get);
-router.post('/register', register);
-router.post('/login', login);
+/*  */
+router.get('/v1/users', verifyToken, usersController.get);
+router.post('/v1/register', usersController.register);
+router.post('/v1/login', usersController.login);
 
 /* POST galleries */
-router.post('/v1/galleries', create);
+router.post('/v1/galleries', galleriesController.create);
+router.get('/v1/galleries', galleriesController.get);
 
 export default router;
