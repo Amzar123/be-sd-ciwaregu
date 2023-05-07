@@ -1,26 +1,11 @@
-// const Pool = require("pg").Pool;
-// const pool = new Pool({
-//   user: 'postgres',
-//   host: 'localhost',
-//   database: 'be-sd-ciwaregu',
-//   password: 'arz140701',
-//   port: 5432 // the default PostgreSQL port
-// })
-
-// module.exports = pool;
-
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+dotenv.config();
 
-const db = new Sequelize('be-sd-ciwaregu', 'postgres', 'arz140701', {
-  host: 'localhost',
-  dialect: 'postgres'
+const db = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: process.env.DB_DIALECT
 });
 
-// import { Sequelize } from "sequelize";
-
-// const db = new Sequelize('db_sdciwaregu', 'root', '',{
-//     host: "localhost",
-//     dialect: "mysql"
-// });
 
 export default db;
