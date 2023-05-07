@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "jest"
+    "test": "jest",
+    "start-gallery": "nodemon src/services/galleries.js"
   },
   "repository": {
     "type": "git",
