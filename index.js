@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// import { Users } from './src/models/UserModel.js';
+// import { Users } from './src/models/users.model.js';
 // import { Galleries } from './src/models/galleries.model.js';
 
 app.use(bodyParser.json());
