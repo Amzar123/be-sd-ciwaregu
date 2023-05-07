@@ -13,7 +13,7 @@ npm run dev
 ```
 
 # API SPEC DOCUMENTATION
-- link : https://app.swaggerhub.com/apis-docs/aliefabdillah/api-spec_sd_ciwaregu_website/1.1.0#/
+- link : https://app.swaggerhub.com/apis-docs/aliefabdillah/api-spec_sd_ciwaregu_website/1.0.0-oas3
 
 - use swagger preview in vscode
 1. Install swagger preview extensions in vscode
