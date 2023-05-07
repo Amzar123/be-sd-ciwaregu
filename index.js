@@ -18,17 +18,17 @@ app.use(
   })
 );
 
-//connect to database
-try {
-  await db.authenticate();
-  console.log('Database Connected....');
+// //connect to database
+// try {
+//   // db.authenticate();
+//   console.log('Database Connected....');
 
-  /* optional create users table using schema */
-  // await Users.sync(); 
-  // await Galleries.sync(); 
-} catch (error) {
-  console.error(error); 
-}
+//   /* optional create users table using schema */
+//   // await Users.sync(); 
+//   // await Galleries.sync(); 
+// } catch (error) {
+//   console.error(error); 
+// }
 
 app.use(router);
 app.use(express.json())
