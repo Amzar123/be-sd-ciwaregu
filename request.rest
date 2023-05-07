@@ -8,8 +8,8 @@ Content-Type: application/json
 {
   "name": "user",
   "email": "asdfgh@gmail.com",
-  "password": "Password",
-  "confirmPassword": "Password",
+  "password": "Password123",
+  "confirmPassword": "Password123",
   "address": "bandung",
   "birthDate": "2022-02-22"
 }
@@ -19,6 +19,6 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "email": "asdfgh45@gmail.com",
-    "password": "password"
+    "email": "asdfgh@gmail.com",
+    "password": "Password123"
 }

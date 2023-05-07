@@ -1,6 +1,6 @@
-const galleries = require('../services/galleries.service');
+import galleries from "../services/galleries.service.js";
 
-async function get(req, res, next) {
+const get = async (req, res, next) => {
   try {
     res.json(await galleries.getMultiple(req.query));
   } catch (err) {
@@ -10,13 +10,7 @@ async function get(req, res, next) {
 }
 
 
-module.exports = {
-  get
-};
-
-import galleries from "../services/galleries.service.js";
-
-export const create = async (req, res, next) => {
+const create = async (req, res, next) => {
   try {
     // Create data to DB
     const data = await galleries.createGalleries(req.body);
@@ -32,4 +26,9 @@ export const create = async (req, res, next) => {
     console.error(`Error while creating programming language`, err.message);
     next(err);
   }
+}
+
+export default {
+  get,
+  create
 }

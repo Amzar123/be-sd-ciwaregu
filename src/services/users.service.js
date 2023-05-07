@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import ResponseClass from "../models/Response.js";
-import { Users, validatePassword } from "../models/UserModel.js";
+import ResponseClass from "../models/response.model.js";
+import { Users, validatePassword } from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 
 //get all users function

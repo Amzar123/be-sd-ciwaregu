@@ -9,7 +9,7 @@
 
 // module.exports = pool;
 
-const Sequelize = require('sequelize');
+import { Sequelize } from "sequelize";
 
 const db = new Sequelize('be-sd-ciwaregu', 'postgres', 'arz140701', {
   host: 'localhost',

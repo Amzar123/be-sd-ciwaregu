@@ -1,5 +1,7 @@
-const { Op } = require('sequelize');
-const Galleries = require("../models/galleries.model");
+import { Op } from 'sequelize';
+// import { query } from "../configs/db.config.js";
+import { v4 as uuidv4 } from 'uuid';
+import { Galleries } from "../models/galleries.model.js";
 
 async function getMultiple(query){
   
@@ -42,13 +44,6 @@ async function getMultiple(query){
     }
   }
 }
-
-module.exports = {
-  getMultiple
-}
-// import { query } from "../configs/db.config.js";
-import { v4 as uuidv4 } from 'uuid';
-import { Galleries } from "../models/galleries.model.js";
 
 async function createGalleries(responseBody){
 
@@ -115,5 +110,6 @@ async function createGalleries(responseBody){
 }
 
 export default {
+  getMultiple,
   createGalleries
 }
