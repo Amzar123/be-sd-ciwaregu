@@ -4,9 +4,8 @@ import db from '../configs/db.config.js';
 //programms attribute users schema
 export const Programs = db.define("programs", {
     id:{
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
-        autoIncrement: true
     },
     name:{
         type: DataTypes.STRING
