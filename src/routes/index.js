@@ -8,9 +8,9 @@ import galleriesController from '../controllers/galleries.controller.js';
 const router =  express.Router();
 
 /*  */
-router.get('/users', verifyToken, usersController.get);
-router.post('/register', usersController.register);
-router.post('/login', usersController.login);
+router.get('/v1/users', verifyToken, usersController.get);
+router.post('/v1/register', usersController.register);
+router.post('/v1/login', usersController.login);
 
 /* POST galleries */
 router.post('/v1/galleries', galleriesController.create);
