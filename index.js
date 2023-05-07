@@ -4,6 +4,7 @@ import router from './src/routes/index.js';
 
 const port = process.env.PORT || 3000;
 const app = express();
+const galleriesRouter = require('./src/routes/galleries.route');
 
 app.use(bodyParser.json());
 app.use(
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 app.use(router);
 
 // app.use('/v1/galleries', galleriesRouter);
+app.use('/v1/galleries', galleriesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {
