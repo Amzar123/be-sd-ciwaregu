@@ -1,11 +1,26 @@
-const env = process.env;
-const fs = require('fs');
-const db = {
-    host: env.DB_HOST,
-    user: env.DB_USER,
-    password: env.DB_PASSWORD,
-    database: env.DB_NAME || 'programming_languages',
-    port: env.DB_PORT || 3306
-};
+// const Pool = require("pg").Pool;
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'be-sd-ciwaregu',
+//   password: 'arz140701',
+//   port: 5432 // the default PostgreSQL port
+// })
 
-module.exports = db;
+// module.exports = pool;
+
+const Sequelize = require('sequelize');
+
+const db = new Sequelize('be-sd-ciwaregu', 'postgres', 'arz140701', {
+  host: 'localhost',
+  dialect: 'postgres'
+});
+
+// import { Sequelize } from "sequelize";
+
+// const db = new Sequelize('db_sdciwaregu', 'root', '',{
+//     host: "localhost",
+//     dialect: "mysql"
+// });
+
+export default db;

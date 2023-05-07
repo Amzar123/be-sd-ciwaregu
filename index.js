@@ -1,8 +1,18 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import express from "express";
+import db from './src/configs/db.config.js';
+import { Users } from './src/models/UserModel.js';
+import router from "./src/routes/index.js";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const port = process.env.PORT || 3000;
-const programmingLanguagesRouter = require('./src/routes/programmingLanguages.route');
+import express from 'express';
+import bodyParser  from 'body-parser';
+import router from './src/routes/index.js';
+
+const galleriesRouter = require('./src/routes/galleries.route');
 
 app.use(bodyParser.json());
 app.use(
@@ -11,11 +21,24 @@ app.use(
   })
 );
 
+//connect to database
+try {
+  await db.authenticate();
+  console.log('Database Connected....');
+
+  // await Users.sync();    //optional create users table using schema
+} catch (error) {
+  console.error(error); 
+}
+
+app.use(router);
+app.use(express.json())
 app.get('/', (req, res) => {
   res.json({'message': 'ok'});
 })
 
-app.use('/programming-languages', programmingLanguagesRouter);
+// app.use('/v1/galleries', galleriesRouter);
+app.use('/v1/galleries', galleriesRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

@@ -28,8 +28,11 @@ paths:
         200:
           description: Register Success
           $ref: '#/components/responses/registerResponse'
+        400:
+          description: Client Register Error
+          $ref: '#/components/responses/clientError'
         500:
-          description: Register Error
+          description: Server Error
           $ref: '#/components/responses/serverError'
   
   #endpoint login
@@ -42,13 +45,26 @@ paths:
         required: true
         $ref: '#/components/requestBodies/loginRequestBody'
       responses:
-        '200':
+        200:
           $ref: '#/components/responses/authenticationTokenResponse'
-        '500':
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
           $ref: '#/components/responses/serverError'
 
-  #endpoint get galleries
+  #endpoint get galleries and create galleries
   /galleries:
+    post:
+      tags:
+        - user
+      summary: "Endpoint while user want to upload new gallery"
+      responses:
+        200:
+          $ref: '#/components/responses/postGalleriesResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
     get:
       tags:
         - user
@@ -56,10 +72,24 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/getGalleriesResponse'
+        400:
+          $ref: '#/components/responses/clientError'
         500:
           $ref: '#/components/responses/serverError'
-
-
+  
+  #Endpoint get school stats
+  /stats:
+    get:
+      tags:
+        - user
+      summary: "Endpoint while user want to see count of teacher, student, program, and awarded"
+      responses:
+        200:
+          $ref: '#/components/responses/getStatsResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
 components:
   #Schema Components
   schemas:
@@ -67,22 +97,27 @@ components:
     baseResponseSchema:
       type: object
       properties:
-        version:
+        status:
+          type: string
+          description: "success/failed"
+        code:
           type: integer
-          description: "version of API"
-        success:
-          type: boolean
-          description: "true/false"
+          description: "200"
+        message:
+          type: string
+          description: "message callback response"
         data:
           type: object
           description: "Data repsonse"
       required:
-        - version
-        - success
+        - status
+        - code
+        - message
         - data
       example:
-        version: 1
-        success: true
+        status: "Success"
+        code: 200
+        message: "Message Response"
         data: {}
 
     #Schema for user responses
@@ -103,24 +138,42 @@ components:
         email : "asdghjk@gmail.com"
         password: "asdfghjk"
 
-    # error schema 
-    errorSchema:
+    # Server Rrror schema 
+    serverErrorSchema:
       type: object
       properties:
-        object:
+        status:
           type: string
+          description: "failed response"
         code:
+          type: integer
+          description: "400"
+        message:
           type: string
-        description:
-          type: string
-        messages:
-          type: object
+          description: "message callback response"
       example:
-        object: "error"
-        code: "server:internal_server_error"
-        description: "Server error"
-        messages: {"error_key": "error_reason"}
+        status: "Failed"
+        code: 500
+        message: "Server Error Message"
     
+    # Server Rrror schema 
+    clientErrorSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "failed response"
+        code:
+          type: integer
+          description: "400"
+        message:
+          type: string
+          description: "message callback response"
+      example:
+        status: "Failed"
+        code: 400
+        message: "Client Error Message"
+
     # schema for register user
     registerResponseSchema:
       allOf:
@@ -131,8 +184,6 @@ components:
               type: object
               $ref: '#/components/schemas/userResponseSchema'
           example:
-            version: 1
-            success: true
             data:
               message: "Method Success"
               email : "asdghjk@gmail.com"
@@ -184,22 +235,37 @@ components:
                 description: "Better Photos"
                 createdAt: "02-02-2023"
                 updateAt: "02-03-2024"
-
-    # server error schema for response
-    serverErrorResponse:
+    
+    #Post Gallery response schema
+    postGalleriesResponseSchema:
       allOf:
         - $ref: '#/components/schemas/baseResponseSchema'
         - type: object
           properties:
             data:
-              $ref: '#/components/schemas/errorSchema'
+              type: object
+              $ref: '#/components/schemas/postGallerySchema'
           example:
-            success: false
             data:
-              object: "error"
-              code: "server:internal_server_error"
-              description: "Server error"
-              messages: {"error_key": "error_reason"}
+              title: "Photos"
+              imageUrl: "https://image.io/9929"
+              description: "Better Photos"
+
+    #Get Stats School response Schema
+    getStatsResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/statsSchema'
+          example:
+            data:
+              teacherCount: 200
+              studentCount: 400
+              programCount: 10
+              awardCount: 100
 
     # schema for authentication data while user login
     authenticationTokenSchema:
@@ -230,6 +296,30 @@ components:
           type: string
         updateAt:
           type: string
+
+    #Schema for post galleries response
+    postGallerySchema:
+      type: object
+      properties:
+        title: 
+          type: string
+        imageUrl: 
+          type: string
+        description: 
+          type: string
+    
+    #Schema for stats response
+    statsSchema:
+      type: object
+      properties:
+        teacherCount: 
+          type: number
+        studentCount: 
+          type: number
+        programCount: 
+          type: number
+        awardCount: 
+          type: number
 
     # Schema for a list object
     unpaginatedListSchema:
@@ -308,7 +398,14 @@ components:
       content:
         application/vnd.sd-ciwaregu.v1+json:
           schema:
-            $ref: '#/components/schemas/serverErrorResponse'
+            $ref: '#/components/schemas/serverErrorSchema'
+    
+    clientError:
+      description: Client Error
+      content:
+        application/vnd.sd-ciwaregu.v1:
+          schema:
+            $ref: '#/components/schemas/clientErrorSchema'
 
     authenticationTokenResponse:
       description: Login Authentication token response
@@ -323,3 +420,17 @@ components:
         application/vnd.sd-ciwaregu.v1:
           schema:
             $ref: '#/components/schemas/getGalleriesResponseSchema'
+    
+    postGalleriesResponse:
+      description: User create new gallery items response
+      content:
+        application/vnd.sd-ciwaregu.v1:
+          schema:
+            $ref: '#/components/schemas/postGalleriesResponseSchema'
+    
+    getStatsResponse:
+      description: Get Stats Response
+      content:
+        application/vnd.sd-ciwaregu.v1:
+          schema:
+            $ref: '#/components/schemas/getStatsResponseSchema'
