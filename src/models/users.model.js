@@ -6,6 +6,11 @@ const { DataTypes } = Sequelize;
 
 //Users attribute database schema
 export const Users = db.define('users_auth', {
+    id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+    },
     name:{
         type: DataTypes.STRING
     },
