@@ -4,10 +4,12 @@ const get = async (req, res, next) => {
   try {
     res.json(await teachers.getMultiple(req.query));
   } catch (err) {
+
       console.error(`Error while getting teachers`, err.message);
       next(err);
   }
 }
+
 
 const create = async (req, res, next) => {
   try {
