@@ -5,6 +5,7 @@ import { verifyToken } from "../middlewares/VerifyToken.js";
 import usersController from "../controllers/users.controller.js";
 import galleriesController from '../controllers/galleries.controller.js';
 import programsController from "../controllers/programs.controller.js";
+import teachersController from "../controllers/teachers.controller.js";
 
 const router =  express.Router();
 
@@ -19,4 +20,9 @@ router.get('/v1/galleries', galleriesController.get);
 
 /* GET programs */
 router.get('/v1/programs', programsController.get)
+
+/* GET teachers */
+router.get('/v1/teachers', teachersController.get)
+router.post('/v1/teachers', teachersController.create)
+
 export default router;
