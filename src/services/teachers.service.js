@@ -45,6 +45,71 @@ async function getMultiple(query){
   }
 }
 
+async function createTeacher(responseBody){
+
+  // Get request Body
+  const { name, imageUrl, position } = responseBody
+  
+  // Error message
+  if (!name || !imageUrl || !position) {
+    let message = ""
+    
+      if (!name ) {
+        message += ", name"
+      }
+      
+      if (!imageUrl) {
+
+        message += ", imageUrl"
+      }
+
+      if (!position) {
+        message += ", position"
+      }
+    
+      return { 
+        status: 'Failed',
+        code: 400,
+        message: `Failed creating teacher${message} is empty!`
+      }
+    }
+    
+    try {
+
+      // Create new gallery record using the Teachers model
+      const newTeacher = await Teachers.create({
+        id: uuidv4(),
+        name: name,
+        imageUrl: imageUrl,
+        position: position,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+
+      // Return the newly created gallery in the response
+      return {
+        status: "success",
+        code: 201,
+        message: 'Teacher created successfully!',
+        data: {
+          teacherId: newTeacher.id,
+          name: newTeacher.name,
+          imageUrl: newTeacher.imageUrl,
+          position: newTeacher.position
+        }
+      }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error creating gallery!'
+    }
+  }
+}
+
 export default {
-  getMultiple
+  getMultiple,
+  createTeacher
 }

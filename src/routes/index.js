@@ -23,5 +23,6 @@ router.get('/v1/programs', programsController.get)
 
 /* GET teachers */
 router.get('/v1/teachers', teachersController.get)
+router.post('/v1/teachers', teachersController.create)
 
 export default router;
