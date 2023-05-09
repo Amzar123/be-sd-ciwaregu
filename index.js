@@ -10,6 +10,7 @@ const port = process.env.PORT || 3000;
 
 // import { Users } from './src/models/users.model.js';
 // import { Galleries } from './src/models/galleries.model.js';
+//import { Programs } from "./src/models/programs.model.js";
 
 app.use(bodyParser.json());
 app.use(
@@ -26,6 +27,7 @@ app.use(
 //   /* optional create users table using schema */
 //   // await Users.sync(); 
 //   // await Galleries.sync(); 
+//   // await Programs.sync();
 // } catch (error) {
 //   console.error(error); 
 // }

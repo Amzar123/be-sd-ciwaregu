@@ -4,6 +4,7 @@ import { verifyToken } from "../middlewares/VerifyToken.js";
 // import controller
 import usersController from "../controllers/users.controller.js";
 import galleriesController from '../controllers/galleries.controller.js';
+import programsController from "../controllers/programs.controller.js";
 
 const router =  express.Router();
 
@@ -16,4 +17,6 @@ router.post('/v1/login', usersController.login);
 router.post('/v1/galleries', galleriesController.create);
 router.get('/v1/galleries', galleriesController.get);
 
+/* GET programs */
+router.get('/v1/programs', programsController.get)
 export default router;
