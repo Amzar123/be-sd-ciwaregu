@@ -12,6 +12,8 @@ const port = process.env.PORT || 3000;
 // import { Galleries } from './src/models/galleries.model.js';
 //import { Programs } from "./src/models/programs.model.js";
 // import { Teachers } from "./src/models/teachers.model.js";
+// import { Students } from "./src/models/students.model.js";
+// import { Awards } from "./src/models/awards.model.js";
 
 app.use(bodyParser.json());
 app.use(
@@ -30,6 +32,8 @@ app.use(
 //   // await Galleries.sync(); 
 //   // await Programs.sync();
 //   // await Teachers.sync();
+//   await Students.sync();
+//   await Awards.sync();
 
 // } catch (error) {
 //   console.error(error); 
