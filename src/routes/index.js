@@ -19,6 +19,7 @@ router.post('/v1/login', usersController.login);
 router.post('/v1/galleries', galleriesController.create);
 router.get('/v1/galleries', galleriesController.get);
 router.put('/v1/galleries/:galleryId', galleriesController.update);
+router.get('/v1/galleries/:galleryId', galleriesController.getById);
 
 /* GET programs */
 router.get('/v1/programs', programsController.get)

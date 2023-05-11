@@ -176,8 +176,43 @@ async function updateGalleriesById(request){
   }
 }
 
+async function getById(request){
+  
+  const { galleryId } = request.params
+
+  try {
+
+    const dbResult = await Galleries.findOne({ where: { id: galleryId } });
+
+    if (!dbResult) {
+      return {
+        status: "Failed", 
+        code : 404,
+        message : 'Gallery not found!'
+      }
+    }
+
+    // Return the mapped galleries in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Fetching gallery successfully!',
+      data : dbResult
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error fetching gallery!'
+    }
+  }
+}
+
 export default {
   getMultiple,
   createGalleries,
-  updateGalleriesById
+  updateGalleriesById,
+  getById
 }
