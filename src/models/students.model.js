@@ -3,42 +3,50 @@ import db from '../configs/db.config.js';
 
 // Galleries attribute database schema
 export const Students = db.define('students', {
-  studentsId: {
+  id: {
     type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
   },
   nis: {
     type: DataTypes.STRING,
-    allowNull:false
   },
-  namaSiswa: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  email:{
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password:{
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  refresh_token:{
+    type: DataTypes.TEXT
+  },
+  imageUrl:{
+    type: DataTypes.STRING
   },
   tmptLahir: {
     type: DataTypes.STRING,
-    allowNull: false
   },
   tgllLahir: {
     type: DataTypes.DATE,
-    allowNull: false
   },
   jenisKel: {
     type: DataTypes.STRING,
-    allowNull: false
   },
   agama: {
     type: DataTypes.STRING,
-    allowNull: false
   },
   alamat: {
     type: DataTypes.STRING,
-    allowNull: false
   },
   tglMasuk: {
     type: DataTypes.DATE,
-    allowNull: false
   },
   namaAyah: {
     type: DataTypes.STRING,
