@@ -6,6 +6,7 @@ import usersController from "../controllers/users.controller.js";
 import galleriesController from '../controllers/galleries.controller.js';
 import programsController from "../controllers/programs.controller.js";
 import teachersController from "../controllers/teachers.controller.js";
+import statsController from "../controllers/stats.controller.js";
 
 const router =  express.Router();
 
@@ -25,4 +26,6 @@ router.get('/v1/programs', programsController.get)
 router.get('/v1/teachers', teachersController.get)
 router.post('/v1/teachers', teachersController.create)
 
+/* GET Stats */
+router.get('/v1/stats', statsController.get)
 export default router;
