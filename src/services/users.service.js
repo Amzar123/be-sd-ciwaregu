@@ -144,6 +144,7 @@ async function loginUsers(requestbody){
                         const loginResult = {
                             code: 200,
                             userId: userStudentsRegistered.id,
+                            roles: "Student",
                             refresh_token: resultToken.refreshToken,
                             accessToken: resultToken.accessToken,
                         }
@@ -179,6 +180,7 @@ async function loginUsers(requestbody){
                         const loginResult = {
                             code: 200,
                             userId: userTeachersRegistered.id,
+                            roles: "Teachers",
                             refresh_token: resultToken.refreshToken,
                             accessToken: resultToken.accessToken,
                         }

@@ -41,6 +41,7 @@ const login = async(req, res) => {
                 object: "authentication_token",
                 userId: loginResult.userId,
                 email: req.body.email,
+                roles: loginResult.roles,
                 authentication_token: loginResult.accessToken
             }
     
