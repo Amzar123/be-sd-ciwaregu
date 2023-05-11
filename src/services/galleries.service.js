@@ -210,9 +210,46 @@ async function getById(request){
   }
 }
 
+async function deleteById(request){
+  
+  const { galleryId } = request.params
+
+  try {
+
+    const dbResult = await Galleries.findOne({ where: { id: galleryId } });
+
+    if (!dbResult) {
+      return {
+        status: "Failed", 
+        code : 404,
+        message : 'Gallery not found!'
+      }
+    }
+
+    // Delete the gallery by ID using the Galleries model
+    await dbResult.destroy();
+
+    // Return success message in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Gallery deleted successfully!'
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error deleting gallery!'
+    }
+  }
+}
+
 export default {
   getMultiple,
   createGalleries,
   updateGalleriesById,
-  getById
+  getById,
+  deleteById
 }
