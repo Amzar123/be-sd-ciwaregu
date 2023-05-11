@@ -4,7 +4,7 @@ import ResponseClass from "../models/response.model.js";
 //get all users function
 const get = async(req, res) => {
     try {
-        const users = await UsersService.getUsers();
+        const users = await UsersService.getPpdb();
         res.json(users);
     } catch (error) {
         console.log(error);
@@ -39,6 +39,7 @@ const login = async(req, res) => {
             responseSuccess.message = "Login Success"
             responseSuccess.data = {
                 object: "authentication_token",
+                userId: loginResult.userId,
                 email: req.body.email,
                 authentication_token: loginResult.accessToken
             }
