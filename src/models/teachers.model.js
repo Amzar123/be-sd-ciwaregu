@@ -10,20 +10,20 @@ export const Teachers = db.define('teachers', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    // allowNull: false,
   },
   email:{
     type: DataTypes.STRING,
-    allowNull: false,
+    // allowNull: false,
     unique: true,
   },
   password:{
     type: DataTypes.STRING,
-    allowNull: false,
+    // allowNull: false,
   },
   refresh_token:{
     type: DataTypes.TEXT,
-    allowNull: false,
+    // allowNull: false,
   },
   imageUrl: {
     type: DataTypes.STRING,

@@ -23,12 +23,13 @@ router.get('/v1/galleries/:galleryId', galleriesController.getById);
 router.delete('/v1/galleries/:galleryId', galleriesController.deletetById);
 
 /* GET programs */
-router.get('/v1/programs', programsController.get)
+router.get('/v1/programs', programsController.get);
 
 /* GET teachers */
-router.get('/v1/teachers', teachersController.get)
-router.post('/v1/teachers', teachersController.create)
+router.get('/v1/teachers', teachersController.get);
+router.post('/v1/teachers', teachersController.create);
+router.put('/v1/teachers/:teacherId', teachersController.update);
 
 /* GET Stats */
-router.get('/v1/stats', statsController.get)
+router.get('/v1/stats', statsController.get);
 export default router;
