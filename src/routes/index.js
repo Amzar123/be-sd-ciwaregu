@@ -26,6 +26,7 @@ router.delete('/v1/galleries/:galleryId', galleriesController.deletetById);
 router.get('/v1/programs', programsController.get)
 router.post('/v1/programs', programsController.create)
 router.put('/v1/programs/:programId', programsController.update)
+router.delete('/v1/programs/:programId', programsController.deleteById)
 
 /* teachers */
 router.get('/v1/teachers', teachersController.get)

@@ -89,8 +89,39 @@ async function updateProgramsById(request){
     }
 }
 
+//delete programs by id
+async function deleteProgramsById(request) {
+    var responseError = new ResponseClass.ErrorResponse()
+    var responseSuccess = new ResponseClass.SuccessWithNoDataResponse()
+
+    const programId  = request.params.programId
+    
+    try {
+        //find by id in DB
+        const programResult = await Programs.findOne({ where: {id: programId} })
+
+        if (!programResult) {
+            responseError.message = "Programs Not Found!"
+            return responseError
+        }
+        
+        //delete row
+        await programResult.destroy();
+
+        responseSuccess.message = "Delete programs successfully!"
+        return responseSuccess
+
+    } catch (error) {
+        console.error(error)
+        responseError.code = 500
+        responseError.message = error
+        return responseError
+    }
+}
+
 export default{
     getPrograms,
     createPrograms,
     updateProgramsById,
+    deleteProgramsById,
 }
