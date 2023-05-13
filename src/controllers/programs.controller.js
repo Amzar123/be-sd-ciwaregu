@@ -8,6 +8,16 @@ const get = async (req, res) => {
     }
 }
 
+const create = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.createPrograms(req.body));
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
 export default{
-    get
+    get,
+    create
 }
