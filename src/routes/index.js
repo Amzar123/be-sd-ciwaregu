@@ -15,20 +15,21 @@ router.get('/v1/ppdb', verifyToken, usersController.get);
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
 
-/* POST galleries */
+/* galleries */
 router.post('/v1/galleries', galleriesController.create);
 router.get('/v1/galleries', galleriesController.get);
 router.put('/v1/galleries/:galleryId', galleriesController.update);
 router.get('/v1/galleries/:galleryId', galleriesController.getById);
 router.delete('/v1/galleries/:galleryId', galleriesController.deletetById);
 
-/* GET programs */
+/*  programs */
 router.get('/v1/programs', programsController.get)
+router.post('/v1/programs', programsController.create)
 
-/* GET teachers */
+/* teachers */
 router.get('/v1/teachers', teachersController.get)
 router.post('/v1/teachers', teachersController.create)
 
-/* GET Stats */
+/* Stats */
 router.get('/v1/stats', statsController.get)
 export default router;
