@@ -17,7 +17,17 @@ const create = async(req, res, next) => {
     }
 }
 
+const update = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.updateProgramsById(req))
+    } catch (error) {
+        console(error)
+        next(error)
+    }
+}
+
 export default{
     get,
-    create
+    create,
+    update,
 }

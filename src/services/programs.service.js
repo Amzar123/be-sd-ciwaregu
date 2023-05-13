@@ -52,7 +52,45 @@ async function createPrograms(requestBody){
     }
 }
 
+//update programs by ID
+async function updateProgramsById(request){
+    var responseError = new ResponseClass.ErrorResponse()
+    var responseSuccess = new ResponseClass.SuccessWithNoDataResponse()
+
+    const programId = request.params.programId
+    const {name, goal} = request.body
+
+    if (!name || !goal) {
+        responseError.message = "Name or Goal cannot be empty"
+        return responseError
+    }else{
+        try {
+            const existingPrograms = await Programs.findOne({ where: { id: programId } })
+            
+            if (!existingPrograms) {
+                responseError.message = "Programs Not Found"
+                return responseError
+            }
+            
+            await existingPrograms.update({
+                name: name,
+                goal: goal,
+                updatedAt: new Date()
+            });
+
+            responseSuccess.message = `update programs ${name} successfully`;
+            return responseSuccess
+
+        } catch (error) {
+            responseError.code = 500
+            responseError.message = error
+            return responseError;
+        }
+    }
+}
+
 export default{
     getPrograms,
-    createPrograms
+    createPrograms,
+    updateProgramsById,
 }
