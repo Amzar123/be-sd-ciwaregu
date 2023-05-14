@@ -9,6 +9,15 @@ const getById = async(req, res) => {
     }
 }
 
+const update = async(req, res) => {
+    try {
+        res.json(await ProfileService.updateProfile(req));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export default {
     getById,
+    update,
 }

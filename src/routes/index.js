@@ -44,6 +44,7 @@ router.get('/v1/stats', statsController.get)
 router.post('/v1/ppdb', ppdbController.create)
 
 /* Profile */
-router.get('/v1/profile/:userId', profileController.getById)
+router.get('/v1/profile/:userId', verifyToken, profileController.getById)
+router.put('/v1/profile/:userId', verifyToken, profileController.update)
 
 export default router;
