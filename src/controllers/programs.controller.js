@@ -35,9 +35,19 @@ const deleteById = async(req, res, next) => {
     }
 }
 
+const getById = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.getProgramById(req));
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
 export default{
     get,
     create,
     update,
     deleteById,
+    getById
 }
