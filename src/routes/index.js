@@ -14,6 +14,7 @@ const router =  express.Router();
 router.get('/v1/ppdb', verifyToken, usersController.get);
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
+router.delete('/v1/logout', usersController.logout)
 
 /* galleries */
 router.post('/v1/galleries', galleriesController.create);
