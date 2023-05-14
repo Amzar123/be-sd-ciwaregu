@@ -34,4 +34,5 @@ router.post('/v1/teachers', teachersController.create)
 
 /* Stats */
 router.get('/v1/stats', statsController.get)
+
 export default router;
