@@ -11,11 +11,17 @@ info:
 tags:
   - name: Authentication
     description: "Login & Register"
-  - name: Admin
+  - name: Galleries
     description: ""
   - name: Teachers
     description: ""
   - name: Students
+    description: ""
+  - name: Programs
+    description: ""
+  - name: Stats
+    description: ""
+  - name: PPDB
     description: ""
   
 
@@ -57,12 +63,26 @@ paths:
         500:
           $ref: '#/components/responses/serverError'
   
+  #endpoint logout
+  /v1/logout:
+    delete:
+      tags:
+        - Authentication
+      summary: "Endpoint logout for users"
+      responses:
+        200:
+          $ref: '#/components/responses/logoutResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+  
   
   #endpoint get galleries and create galleries
   /v1/galleries:
     post:
       tags:
-        - Admin
+        - Galleries
       summary: "Endpoint while user want to upload new gallery"
       requestBody:
         required: true
@@ -76,8 +96,7 @@ paths:
           $ref: '#/components/responses/serverError'
     get:
       tags:
-        - Students
-        - Teachers
+        - Galleries
       summary: "Endpoint while user request list gallery"
       responses:
         200:
@@ -87,12 +106,81 @@ paths:
         500:
           $ref: '#/components/responses/serverError'
   
+  /v1/galleries/{galleryId}:
+    put:
+      tags:
+        - Galleries
+      summary: "Endpoint while user want to update existing gallery"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: gallery id
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/galleriesRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/putGalleriesResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+
+    get:
+      tags:
+        - Galleries
+      summary: "Endpoint while user want to get gallery by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: gallery id
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/galleriesRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/getGalleryByIdResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+    
+    delete:
+      tags:
+        - Galleries
+      summary: "Endpoint while user want to get gallery by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: gallery id
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/galleriesRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/deleteGalleryResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+  
   #Endpoint get school stats
   /v1/stats:
     get:
       tags:
-        - Students
-        - Teachers
+        - Stats
       summary: "Endpoint while user want to see count of teacher, student, program, and awarded"
       responses:
         200:
@@ -106,8 +194,7 @@ paths:
   /v1/programs:
     get:
       tags:
-        - Students
-        - Teachers
+        - Programs
       summary: "Endpoint while user want to get all programs"
       responses:
         200:
@@ -116,12 +203,89 @@ paths:
           $ref: '#/components/responses/clientError'
         500:
           $ref: '#/components/responses/serverError'
-  
+    
+    post:
+      tags:
+        - Programs
+      summary: "Endpoint while user want to create new programs"
+      responses:
+        200:
+          $ref: '#/components/responses/postProgramsResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+
+  #endpopint programs by id
+  /v1/programs/{programId}:
+    put:
+      tags:
+        - Programs
+      summary: "Endpoint while user want to update existing programs"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: programs id
+      requestBody:
+        required: true
+        $ref: '#/components/requestBodies/programsRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/putProgramsResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+    
+    get:
+      tags:
+        - Programs
+      summary: "Endpoint while user want to get programs by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: programs id
+      responses:
+        200:
+          $ref: '#/components/responses/getProgramsByIdResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+
+    delete:
+      tags:
+        - Programs
+      summary: "Endpoint while user want to delete programs by id"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: 
+            type: integer
+            minimum: 1
+          description: programs id
+      responses:
+        200:
+          $ref: '#/components/responses/deleteProgramsResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+
   #Endpoint get all Teachers school
   /v1/teachers:
     post:
       tags:
-        - Admin
+        - Teachers
       summary: "Endpoint for create new teachers"
       requestBody: 
         required: true
@@ -135,12 +299,28 @@ paths:
           $ref: '#/components/responses/serverError'
     get:
       tags:
-        - Students
         - Teachers
       summary: "Endpoint while user want to get teachers"
       responses:
         200:
           $ref: '#/components/responses/getAllTeachersResponse'
+        400:
+          $ref: '#/components/responses/clientError'
+        500:
+          $ref: '#/components/responses/serverError'
+
+  #Endpoint ppdb
+  /v1/ppdb:
+    post:
+      tags:
+        - PPDB
+      summary: "Endpoint for create new ppdb"
+      requestBody: 
+        required: true
+        $ref: '#/components/requestBodies/ppdbPostRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/postPpdbResponse'
         400:
           $ref: '#/components/responses/clientError'
         500:
@@ -181,7 +361,28 @@ components:
         status: "Success"
         code: 200
         message: "Message Response"
-        data: {}     
+        data: {}
+
+    baseResponseNoDataSchema:
+      type: object
+      properties:
+        status:
+          type: string
+          description: "success/failed"
+        code:
+          type: integer
+          description: "200"
+        message:
+          type: string
+          description: "message callback response"
+      required:
+        - status
+        - code
+        - message
+      example:
+        status: "Success"
+        code: 200
+        message: "Message Response"
 
     #Schema for user responses
     userResponseSchema:
@@ -201,7 +402,6 @@ components:
         email : "asdghjk@gmail.com"
         password: "asdfghjk"
     
-
     # Server Rrror schema 
     serverErrorSchema:
       type: object
@@ -290,6 +490,10 @@ components:
               roles: "Student"
               authentication_token: "azJRj09l7jvR8KhTqUs3"
     
+    logoutResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseNoDataSchema'
+    
     #get list of gallery
     getGalleriesResponseSchema:
       allOf:
@@ -320,6 +524,21 @@ components:
                 createdAt: "02-02-2023"
                 updateAt: "02-03-2024"
     
+    getGalleryByIdResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/gallerySchema'
+          example:
+            data:
+              galleryId: "oaosmda=-kasldkas-kaskdkald"
+              title: "Photos"
+              imageUrl: "https://image.io/9929"
+              description: "Better Photos"
+    
     #Post Gallery response schema
     postGalleriesResponseSchema:
       allOf:
@@ -328,12 +547,32 @@ components:
           properties:
             data:
               type: object
-              $ref: '#/components/schemas/postGallerySchema'
+              $ref: '#/components/schemas/gallerySchema'
           example:
             data:
+              galleryId: "oaosmda=-kasldkas-kaskdkald"
               title: "Photos"
               imageUrl: "https://image.io/9929"
               description: "Better Photos"
+    
+    putGalleriesResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/gallerySchema'
+          example:
+            data:
+              galleryId: "oaosmda=-kasldkas-kaskdkald"
+              title: "Photos"
+              imageUrl: "https://image.io/9929"
+              description: "Better Photos"
+      
+    deleteGalleryResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseNoDataSchema'
 
     postTeachersResponseSchema:
       allOf:
@@ -390,7 +629,7 @@ components:
                 createdAt: "2023-05-09T02:54:11.636Z"
                 updatedAt: "2023-05-09T02:54:11.640Z"
     
-    #Get all programs response schema
+    #Programs Response Schema start
     getProgramsResponseSchema:
       allOf:
         - $ref: '#/components/schemas/baseResponseSchema'
@@ -407,6 +646,98 @@ components:
               - id: "nana023asd-kmaskmd-00w0-oksakd"
                 name: "rapat rutin"
                 goal: "rapat rutin membahas dan mengevaluasi program"
+
+    getProgramsByIdResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/programsSchema'
+          example:
+            data:
+              id: "oaosmda=-kasldkas-kaskdkald"
+              name: "Upacara Senin Rutin"
+              goal: "Upacara"
+    
+    postProgramsResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseNoDataSchema'
+    
+    putProgramsResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseNoDataSchema'
+      
+    deleteProgramsResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseNoDataSchema'
+    #Programs Response Schema End
+
+    #PPDB Response Schema start
+    postPpdbResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/ppdbSchema'
+          example:
+            data:
+              id: "b161698f-4e4f-4e1c-9ece-3fc21cf7674e"
+              studentId: "d6f32a83-eafd-4b3f-8bf8-6a5fc321defe"
+              namaLengkap: "Aji Muhammad Zapar"
+              namaPanggilan: "aji"
+              jenisKelamin: "laki-laki"
+              tempatLahir: "Bandung"
+              tanggalLahir: "2000-08-04T17:00:00.000Z"
+              agama: "islam"
+              tinggiBadan: 174
+              beratBadan: null
+              alamat: "pasir sereh"
+              rt: "02"
+              rw: "05"
+              kelurahan: "mukapayung"
+              kecamatan: "Cililin"
+              kabupaten: "Bandung barat"
+              provinsi: "Jawa Barat"
+              kodePos: "40562"
+              noTelp: "085159794050"
+              sekolahAsal: "-"
+              createdAt: "2023-05-14T07:47:18.881Z"
+              updatedAt: "2023-05-14T07:47:18.882Z"
+              guardianId: null
+              familyId: null
+              keluarga: {
+                  id: "3b253732-f4b2-4453-b1fb-f69a246ef813",
+                  namaAyah: "sensor",
+                  pendidikanAyah: "S3",
+                  pekerjaanAyah: "buruh",
+                  penghasilanAyah: 90000000,
+                  namaIbu: "sensor",
+                  pendidikanIbu: "S3",
+                  pekerjaanIbu: "IRT",
+                  penghasilanIbu: 0,
+                  createdAt: "2023-05-14T07:47:18.910Z",
+                  updatedAt: "2023-05-14T07:47:18.911Z",
+                  candidateId: null
+              }
+              berkas: {
+                  id: "f1ca836f-b0eb-46f0-b1dd-ec234333858c",
+                  nama: "foto kopi ktp",
+                  jenis: "KTP",
+                  ukuran: 3,
+                  url: "uri",
+                  createdAt: "2023-05-14T07:47:18.913Z",
+                  updatedAt: "2023-05-14T07:47:18.913Z",
+                  candidateId: null
+              }
+              wali: null
+
+
+    
+    #PPDB Response Schema end
 
     # schema for authentication data while user login
     authenticationTokenSchema:
@@ -427,24 +758,11 @@ components:
     gallerySchema:
       type: object
       properties:
+        galleryId:
+          type: string
         imageUrl: 
           type: string
         title: 
-          type: string
-        description: 
-          type: string
-        createdAt:
-          type: string
-        updateAt:
-          type: string
-
-    #Schema for post galleries response
-    postGallerySchema:
-      type: object
-      properties:
-        title: 
-          type: string
-        imageUrl: 
           type: string
         description: 
           type: string
@@ -502,6 +820,129 @@ components:
         goal:
           type: string
 
+    #Schema for PPDB Response
+    ppdbSchema:
+      type: object
+      properties:
+        studentId:
+          type: string
+          description: Unique identifier for the student
+        namaLengkap:
+          type: string
+          description: Full name of the student
+        namaPanggilan:
+          type: string
+          description: Nickname of the student
+        jenisKelamin:
+          type: string
+          description: Gender of the student
+        tempatLahir:
+          type: string
+          description: Birthplace of the student
+        tanggalLahir:
+          type: string
+          description: Date of birth of the student
+        agama:
+          type: string
+          description: Religion of the student
+        tinggiBadan:
+          type: integer
+          description: Height of the student in cm
+        beratBaran:
+          type: integer
+          description: Weight of the student in kg
+        alamat:
+          type: string
+          description: Address of the student
+        rt:
+          type: string
+          description: Neighborhood association of the student
+        rw:
+          type: string
+          description: Neighborhood unit of the student
+        kelurahan:
+          type: string
+          description: Sub-district of the student
+        kecamatan:
+          type: string
+          description: District of the student
+        kabupaten:
+          type: string
+          description: Regency of the student
+        provinsi:
+          type: string
+          description: Province of the student
+        kodePos:
+          type: string
+          description: Postal code of the student
+        noTelp:
+          type: string
+          description: Phone number of the student
+        sekolahAsal:
+          type: string
+          description: Previous school of the student
+        keluarga:
+          type: object
+          properties:
+            namaAyah:
+              type: string
+              description: Full name of the student's father
+            pendidikanAyah:
+              type: string
+              description: Education level of the student's father
+            pekerjaanAyah:
+              type: string
+              description: Occupation of the student's father
+            penghasilanAyah:
+              type: integer
+              description: Income of the student's father in IDR
+            namaIbu:
+              type: string
+              description: Full name of the student's mother
+            pendidikanIbu:
+              type: string
+              description: Education level of the student's mother
+            pekerjaanIbu:
+              type: string
+              description: Occupation of the student's mother
+            penghasilanIbu:
+              type: integer
+              description: Income of the student's mother in IDR
+        wali:
+          type: object
+          nullable: true
+          properties:
+            nama:
+              type: string
+              description: Full name of the student's guardian
+            hubungan:
+              type: string
+              description: Relationship of the student's guardian to the student
+            pendidikan:
+              type: string
+              description: Education level of the student's guardian
+            pekerjaan:
+              type: string
+              description: Occupation of the student's guardian
+            penghasilan:
+              type: integer
+              description: Income of the student's guardian in IDR
+        berkas:
+          type: object
+          properties:
+            nama:
+              type: string
+              description: Name of the document
+            jenis:
+              type: string
+              description: Type of the document
+            ukuran:
+              type: integer
+              description: Size of the document in MB
+            url:
+              type: string
+              description: URL of the document
+
     # Schema for a list object
     unpaginatedListSchema:
       type: object
@@ -535,6 +976,7 @@ components:
               name: "user"
               email: "asdfgh45@gmail.com"
               password: "Testes123"
+
     #request body for login
     loginRequestBody:
       required: true
@@ -568,6 +1010,20 @@ components:
               description:
                 type: string
                 description: gallery description
+
+    #request body for galleries post
+    programsRequestBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            properties:
+              name:
+                type: string
+                description: program name
+              goal:
+                type: string
+                description: programs goal
     
     #request Body for teachers post
     teacherPostRequestBody:
@@ -585,6 +1041,132 @@ components:
               posititon:
                 type: string
                 description: teache position
+    
+    ppdbPostRequestBody:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            properties:
+              studentId:
+                type: string
+                description: Unique identifier for the student
+              namaLengkap:
+                type: string
+                description: Full name of the student
+              namaPanggilan:
+                type: string
+                description: Nickname of the student
+              jenisKelamin:
+                type: string
+                description: Gender of the student
+              tempatLahir:
+                type: string
+                description: Birthplace of the student
+              tanggalLahir:
+                type: string
+                description: Date of birth of the student
+              agama:
+                type: string
+                description: Religion of the student
+              tinggiBadan:
+                type: integer
+                description: Height of the student in cm
+              beratBaran:
+                type: integer
+                description: Weight of the student in kg
+              alamat:
+                type: string
+                description: Address of the student
+              rt:
+                type: string
+                description: Neighborhood association of the student
+              rw:
+                type: string
+                description: Neighborhood unit of the student
+              kelurahan:
+                type: string
+                description: Sub-district of the student
+              kecamatan:
+                type: string
+                description: District of the student
+              kabupaten:
+                type: string
+                description: Regency of the student
+              provinsi:
+                type: string
+                description: Province of the student
+              kodePos:
+                type: string
+                description: Postal code of the student
+              noTelp:
+                type: string
+                description: Phone number of the student
+              sekolahAsal:
+                type: string
+                description: Previous school of the student
+              keluarga:
+                type: object
+                properties:
+                  namaAyah:
+                    type: string
+                    description: Full name of the student's father
+                  pendidikanAyah:
+                    type: string
+                    description: Education level of the student's father
+                  pekerjaanAyah:
+                    type: string
+                    description: Occupation of the student's father
+                  penghasilanAyah:
+                    type: integer
+                    description: Income of the student's father in IDR
+                  namaIbu:
+                    type: string
+                    description: Full name of the student's mother
+                  pendidikanIbu:
+                    type: string
+                    description: Education level of the student's mother
+                  pekerjaanIbu:
+                    type: string
+                    description: Occupation of the student's mother
+                  penghasilanIbu:
+                    type: integer
+                    description: Income of the student's mother in IDR
+              wali:
+                type: object
+                nullable: true
+                properties:
+                  nama:
+                    type: string
+                    description: Full name of the student's guardian
+                  hubungan:
+                    type: string
+                    description: Relationship of the student's guardian to the student
+                  pendidikan:
+                    type: string
+                    description: Education level of the student's guardian
+                  pekerjaan:
+                    type: string
+                    description: Occupation of the student's guardian
+                  penghasilan:
+                    type: integer
+                    description: Income of the student's guardian in IDR
+              berkas:
+                type: object
+                properties:
+                  nama:
+                    type: string
+                    description: Name of the document
+                  jenis:
+                    type: string
+                    description: Type of the document
+                  ukuran:
+                    type: integer
+                    description: Size of the document in MB
+                  url:
+                    type: string
+                    description: URL of the document
+
 
   #Responses Components
   responses:
@@ -622,13 +1204,28 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/loginResponseSchema'
+    
+    logoutResponse:
+      description: Logout User
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/logoutResponseSchema'
 
+    # Gallery Endpoint Start
     getGalleriesResponse:
       description: Get List of Gallery response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/getGalleriesResponseSchema'
+    
+    getGalleryByIdResponse:
+      description: Get Gallery by id response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/getGalleryByIdResponseSchema'
     
     postGalleriesResponse:
       description: User create new gallery items response
@@ -637,6 +1234,22 @@ components:
           schema:
             $ref: '#/components/schemas/postGalleriesResponseSchema'
     
+    putGalleriesResponse:
+      description: user update gallery items response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/putGalleriesResponseSchema'
+    
+    deleteGalleryResponse:
+      description: user want to delete gallery
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/deleteGalleryResponseSchema'
+
+    # Gallery Endpoint End
+    
     getStatsResponse:
       description: Get Stats Response
       content:
@@ -644,12 +1257,42 @@ components:
           schema:
             $ref: '#/components/schemas/getStatsResponseSchema'
     
+    # Programs Response Start
     getProgramsResponse:
       description: Get all Programs Response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/getProgramsResponseSchema'
+    
+    getProgramsByIdResponse:
+      description: Get Programs by id response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/getProgramsByIdResponseSchema'
+    
+    postProgramsResponse:
+      description: User create new programs items response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/postProgramsResponseSchema'
+    
+    putProgramsResponse:
+      description: user update gallery items response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/putProgramsResponseSchema'
+    
+    deleteProgramsResponse:
+      description: user want to delete gallery
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/deleteProgramsResponseSchema'
+    # Programs Response end
     
     getAllTeachersResponse:
       description: Get all teachers Response
@@ -664,3 +1307,10 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/postTeachersResponseSchema'
+
+    postPpdbResponse:
+      description: Post new ppdb for new student response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/postPpdbResponseSchema'
