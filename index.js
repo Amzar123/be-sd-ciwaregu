@@ -29,25 +29,25 @@ app.use(
 );
 
 //connect to database
-try {
-  // db.authenticate();
-  console.log('Database Connected....');
+// try {
+//   // db.authenticate();
+//   console.log('Database Connected....');
 
-  /* optional create table into database using schema */
-  // await Galleries.sync(); 
-  // await Programs.sync();
-  await Users.sync();
-  await Teachers.sync();
-  await Students.sync();
-  // await Awards.sync();
-  // await Candidate.sync();
-  // await Family.sync();
-  // await Guardian.sync();
-  // await Document.sync();
+//   /* optional create table into database using schema */
+//   // await Galleries.sync(); 
+//   // await Programs.sync();
+//   // await Users.sync();
+//   // await Teachers.sync();
+//   // await Students.sync();
+//   // await Awards.sync();
+//   // await Candidate.sync();
+//   // await Family.sync();
+//   // await Guardian.sync();
+//   // await Document.sync();
 
-} catch (error) {
-  console.error(error); 
-}
+// } catch (error) {
+//   console.error(error); 
+// }
 
 app.use(router);
 app.use(cookieParser())

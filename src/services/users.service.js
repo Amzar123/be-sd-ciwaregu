@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import ResponseClass from "../models/response.model.js";
 import { validatePassword } from "../models/password.model.js";
-import { Students } from "../models/students.model.js";
-import { Teachers } from "../models/teachers.model.js";
+import { Users } from "../models/users.model.js";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -37,16 +36,16 @@ async function registerUsers(requestBody){
     
         }else{
             //SELECT ... where email = requestbody.email LIMIT 1
-            const emailStudentsRegistered = await Students.findOne({
+            const emailRegistered = await Users.findOne({
                 where: { email: requestBody.email}
             })
 
-            const emailTeachersRegistered = await Teachers.findOne({
-                where: { email: requestBody.email}
-            })
+            if (emailRegistered !== null) {
+        
+                responseError.message = "Email has been registered"
+                return responseError
 
-            if (emailStudentsRegistered == null && emailTeachersRegistered == null) {                
-
+            }else{
                 //validate method from users model
                 const passValidation = validatePassword(requestBody.password, false)
                 if(passValidation == false){
@@ -64,8 +63,8 @@ async function registerUsers(requestBody){
                         const salt = await bcrypt.genSalt();
                         const hashPass = await bcrypt.hash(requestBody.password, salt);
                         try {
-                            //add student to tabels Students
-                            await Students.create({
+                            //add user to database
+                            await Users.create({
                                 id: uuidv4(),
                                 name: requestBody.name,
                                 email: requestBody.email,
@@ -73,7 +72,7 @@ async function registerUsers(requestBody){
                             });
                             
                             //return response success
-                            responseSuccess.message = "Register Success"
+                            responseSuccess.message = "Register Sucess"
                             responseSuccess.data = {
                                 name: requestBody.name,
                                 email: requestBody.email,
@@ -92,9 +91,6 @@ async function registerUsers(requestBody){
                         };
                     };
                 }
-            }else{
-                responseError.message = "Email has been registered"
-                return responseError
             }
         }
     }
@@ -110,90 +106,46 @@ async function loginUsers(requestbody){
         return responseError
     }else{
         //find email from request body in database
-        const userStudentsRegistered = await Students.findOne({
+        const userRegistered = await Users.findOne({
             where: { email: requestbody.email}
         })
 
-        const userTeachersRegistered = await Teachers.findOne({
-            where: { email: requestbody.email}
-        })
-
-        if (userStudentsRegistered == null && userTeachersRegistered == null) {
+        if (!userRegistered) {
             responseError.message = "Email not found!"
             return responseError
         }else{
-            //compare request body password with password in database
-            if (userStudentsRegistered !== null) {
-                const matchPassword = await bcrypt.compare(requestbody.password, userStudentsRegistered.password);
-                //if pass not match
-                if (!matchPassword) {
-                    responseError.message = "Wrong Password!"
-                    return responseError
-                }else{
-                    const resultToken = generateToken(userStudentsRegistered)
-    
-                    try {
-                        //update refresh token to database
-                        await Students.update({refresh_token: resultToken.refreshToken},{
-                            where:{
-                                id: userStudentsRegistered.id
-                            }
-                        })
-                        
-                        //return login result response
-                        const loginResult = {
-                            code: 200,
-                            userId: userStudentsRegistered.id,
-                            roles: "Student",
-                            refresh_token: resultToken.refreshToken,
-                            accessToken: resultToken.accessToken,
+
+            const matchPassword = await bcrypt.compare(requestbody.password, userRegistered.password);
+            if (!matchPassword) {
+                responseError.message = "Wrong Password!"
+                return responseError
+            }else{
+                const resultToken = generateToken(userRegistered)
+
+                try {
+                    //update refresh token to database
+                    await Users.update({refresh_token: resultToken.refreshToken},{
+                        where:{
+                            id: userRegistered.id
                         }
-            
-                        return loginResult
-                    } catch (error) {
-                        console.log(error);
-    
-                        responseError.code = 500;
-                        responseError.message = error
-                        
-                        return responseError
+                    })
+                    
+                    //return login result response
+                    const loginResult = {
+                        code: 200,
+                        userId: userRegistered.id,
+                        refresh_token: resultToken.refreshToken,
+                        accessToken: resultToken.accessToken,
                     }
-                }
-            }else {
-                const matchPassword = await bcrypt.compare(requestbody.password, userTeachersRegistered.password);
-                //if pass not match
-                if (!matchPassword) {
-                    responseError.message = "Wrong Password!"
+        
+                    return loginResult
+                } catch (error) {
+                    console.log(error);
+
+                    responseError.code = 500;
+                    responseError.message = error
+                    
                     return responseError
-                }else{
-                    const resultToken = generateToken(userTeachersRegistered)
-    
-                    try {
-                        //update refresh token to database
-                        await Teachers.update({refresh_token: resultToken.refreshToken},{
-                            where:{
-                                id: userTeachersRegistered.id
-                            }
-                        })
-                        
-                        //return login result response
-                        const loginResult = {
-                            code: 200,
-                            userId: userTeachersRegistered.id,
-                            roles: "Teachers",
-                            refresh_token: resultToken.refreshToken,
-                            accessToken: resultToken.accessToken,
-                        }
-            
-                        return loginResult
-                    } catch (error) {
-                        console.log(error);
-    
-                        responseError.code = 500;
-                        responseError.message = error
-                        
-                        return responseError
-                    }
                 }
             }          
         }
@@ -214,13 +166,10 @@ async function logoutUsers(request) {
         const requestCookie = request.split("=");
         const refreshToken = requestCookie[1]
 
-        const loginStudent = await Students.findOne({ where: { refresh_token: refreshToken } });
-        const loginTeacher = await Teachers.findOne({ where: { refresh_token: refreshToken } });
+        const loginUsers = await Users.findOne({ where: { refresh_token: refreshToken } });
     
-        if (loginStudent !== null) {
-          await Students.update({ refresh_token: null }, { where: { id: loginStudent.id } });
-        } else if (loginTeacher !== null) {
-          await Teachers.update({ refresh_token: null }, { where: { id: loginTeacher.id } });
+        if (loginUsers !== null) {
+          await Users.update({ refresh_token: null }, { where: { id: loginUsers.id } });
         } else {
           responseSuccess.code = 204;
           responseSuccess.message = "The Request did not return any content";
@@ -233,7 +182,7 @@ async function logoutUsers(request) {
     } catch (error) {
         console.log(error);
         responseError.code = 500;
-        responseError.message = error;
+        responseError.message = "Internal Server Error";
         return responseError;
     }   
 }
