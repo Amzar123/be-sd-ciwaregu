@@ -119,9 +119,38 @@ async function deleteProgramsById(request) {
     }
 }
 
+//get programs by id
+async function getProgramById(request){
+    var responseError = new ResponseClass.ErrorResponse()
+    var responseSuccess = new ResponseClass.SuccessResponse()
+
+    const programId  = request.params.programId
+
+    try {
+        //find by id in DB
+        const programResult = await Programs.findOne({ where: {id: programId} })
+
+        if (!programResult) {
+            responseError.message = "Programs Not Found!"
+            return responseError
+        }
+        
+        responseSuccess.message = `get program ${programResult.dataValues.name} success!`
+        responseSuccess.data = programResult
+        return responseSuccess
+
+    } catch (error) {
+        console.error(error)
+        responseError.code = 500
+        responseError.message = error
+        return responseError
+    }
+}
+
 export default{
     getPrograms,
     createPrograms,
     updateProgramsById,
     deleteProgramsById,
+    getProgramById
 }
