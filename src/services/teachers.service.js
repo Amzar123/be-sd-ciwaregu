@@ -1,11 +1,13 @@
 import { Op } from 'sequelize';
 // import { query } from "../configs/db.config.js";
 import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { Teachers } from "../models/teachers.model.js";
+import { Users } from '../models/users.model.js';
 
 async function getMultiple(query){
   
-  const { name, imageUrl, position } = query;
+  const { name, imageUrl, position, email, nuptk } = query;
 
   try {
 
@@ -24,8 +26,24 @@ async function getMultiple(query){
         [Op.iLike]: `%${position}%`, // use case-insensitive LIKE operator
       };
     }
+    if (nuptk) {
+      whereClause.nuptk = nuptk;
+    }
+    if (email) {
+      whereClause.email = email;
+    }
 
-    const dbResult = await Teachers.findAll({ where: whereClause });
+    const dbResult = await Teachers.findAll({ 
+      where: whereClause, 
+      include: [
+        { 
+          model: Users, 
+          as: 'teachersDetail',
+          attributes: ['name', 'email', 'imageUrl'] 
+        } 
+      ]
+    });
+    
 
     // Return the mapped Teachers in the response
     return {
@@ -45,111 +63,148 @@ async function getMultiple(query){
   }
 }
 
-async function createTeacher(responseBody){
+async function createTeacher(responseBody) {
 
   // Get request Body
-  const { name, imageUrl, position } = responseBody
-  
-  // Error message
-  if (!name || !imageUrl || !position) {
-    let message = ""
-    
-      if (!name ) {
-        message += ", name"
-      }
-      
-      if (!imageUrl) {
+  const { name, imageUrl, position, email, nuptk } = responseBody;
 
-        message += ", imageUrl"
-      }
+  // Error handling
+  if (!name || !position || !nuptk ) {
+    const missingFields = [];
 
-      if (!position) {
-        message += ", position"
-      }
-    
-      return { 
-        status: 'Failed',
-        code: 400,
-        message: `Failed creating teacher${message} is empty!`
-      }
+    if (!name) {
+      missingFields.push('name');
     }
+
+    if (!position) {
+      missingFields.push('position');
+    }
+
+    if (!nuptk) {
+      missingFields.push('nuptk');
+    }
+
+    return {
+      status: 'Failed',
+      code: 400,
+      message: `Failed creating teacher. Missing fields: ${missingFields.join(', ')}.`
+    };
+  }
+
+  try {
     
-    try {
+    const userId = uuidv4();
 
-      // Create new gallery record using the Teachers model
-      const newTeacher = await Teachers.create({
-        id: uuidv4(),
-        name: name,
-        imageUrl: imageUrl,
-        position: position,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      });
+    // set default imageUrl if empty
+    const defaultImageUrl = 'https://i.stack.imgur.com/34AD2.jpg';
+    const finalImageUrl = imageUrl || defaultImageUrl;
 
-      // Return the newly created gallery in the response
-      return {
-        status: "success",
-        code: 201,
-        message: 'Teacher created successfully!',
-        data: {
-          teacherId: newTeacher.id,
-          name: newTeacher.name,
-          position: newTeacher.position,
-          imageUrl: newTeacher.imageUrl
-        }
+    // set email if empty
+    const shortUuid = uuidv5('mystring', userId).slice(0, 8);
+    const defaultEmail = 'tsdc' + shortUuid + '@sdciwaregu.com'
+    const finalEmail = email || defaultEmail;
+    
+    // Create new user record using the Users model
+    const newUser = await Users.create({
+      id: userId,
+      name: name,
+      email: finalEmail,
+      password: "Gurusdciwaregu123",
+      imageUrl: finalImageUrl,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    // Create new teacher record using the Teachers model
+    const newTeacher = await Teachers.create({
+      id: uuidv4(),
+      nuptk: nuptk,
+      position: position,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: userId
+    });
+
+    // Return the newly created teacher in the response
+    return {
+      status: 'success',
+      code: 201,
+      message: 'Teacher created successfully!',
+      data: {
+        teacherId: newTeacher.id,
+        name: newUser.name,
+        email: newUser.email,
+        nuptk: newTeacher.nuptk,
+        position: newTeacher.position,
+        imageUrl: newUser.imageUrl
       }
-    
+    };
   } catch (err) {
     console.error(err);
     return {
-      status: "Failed", 
-      code : 400,
-      message : 'Error creating gallery!'
-    }
+      status: 'Failed',
+      code: 400,
+      message: 'Error creating teacher!'
+    };
   }
 }
+
 
 async function updateTeacherById(request){
 
   const { teacherId } = request.params
 
   // Get request Body
-  const { name, imageUrl, position } = request.body
-  
-  // Error message
-  if (!name || !imageUrl || !position) {
-    let message = ""
-    
-      if (!name ) {
-        message += ", name"
-      }
-      
-      if (!imageUrl) {
+  const { name, imageUrl, position, email, nuptk } = request.body;
 
-        message += ", imageUrl"
+  // Error handling
+  if (!name || !position || !nuptk || !email) {
+      const missingFields = [];
+
+      if (!name) {
+        missingFields.push('name');
       }
 
       if (!position) {
-        message += ", position"
+        missingFields.push('position');
       }
-    
-      return { 
+
+      if (!email) {
+        missingFields.push('email');
+      }
+
+      if (!nuptk) {
+        missingFields.push('nuptk');
+      }
+
+      return {
         status: 'Failed',
         code: 400,
-        message: `Failed updating teacher${message} is empty!`
-      }
+        message: `Failed creating teacher. Missing fields: ${missingFields.join(', ')}.`
+      };
     }
     
     try {
+      // set default imageUrl if empty
+      const defaultImageUrl = 'https://i.stack.imgur.com/34AD2.jpg';
+      const finalImageUrl = imageUrl || defaultImageUrl;
 
       // Find the existing gallery by its id using the Teachers model
       const existingTeacher = await Teachers.findByPk(teacherId);
 
       // Update the existing gallery record
       const updatedTeacher = await existingTeacher.update({
-        name: name,
-        imageUrl: imageUrl,
+        nuptk: nuptk,
         position: position,
+        updatedAt: new Date()
+      });
+
+      const existingUserTeacher = await Users.findByPk(updatedTeacher.userId);
+
+      const updatedUserTeacher = await existingUserTeacher.update({
+        name: name,
+        email: email,
+        imageUrl: finalImageUrl,
         updatedAt: new Date()
       });
 
@@ -160,9 +215,11 @@ async function updateTeacherById(request){
         message: 'Teacher updated successfully!',
         data: {
           teacherId: updatedTeacher.id,
-          name: updatedTeacher.name,
+          name: updatedUserTeacher.name,
+          email: updatedUserTeacher.email,
+          nuptk: updatedTeacher.nuptk,
           position: updatedTeacher.position,
-          imageUrl: updatedTeacher.imageUrl,
+          imageUrl: updatedUserTeacher.imageUrl,
         }
       }
     

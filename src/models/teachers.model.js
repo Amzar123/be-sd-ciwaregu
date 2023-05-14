@@ -31,4 +31,4 @@ export const Teachers = db.define('teachers', {
 });
 
 // Define association between Teachers and Users
-Teachers.belongsTo(Users, { foreignKey: 'userId' });
+Teachers.belongsTo(Users, { foreignKey: 'userId', as: 'teachersDetail' });
