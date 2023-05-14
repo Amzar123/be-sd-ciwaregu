@@ -39,10 +39,9 @@ const login = async(req, res) => {
             //return response
             responseSuccess.message = "Login Success"
             responseSuccess.data = {
-                object: "authentication_token",
                 userId: loginResult.userId,
                 email: req.body.email,
-                roles: loginResult.roles,
+                role: loginResult.role,
                 authentication_token: loginResult.accessToken
             }
     

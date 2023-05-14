@@ -69,6 +69,7 @@ async function registerUsers(requestBody){
                                 name: requestBody.name,
                                 email: requestBody.email,
                                 password: hashPass,
+                                role: "Users"
                             });
                             
                             //return response success
@@ -76,7 +77,8 @@ async function registerUsers(requestBody){
                             responseSuccess.data = {
                                 name: requestBody.name,
                                 email: requestBody.email,
-                                password: requestBody.password
+                                password: requestBody.password,
+                                role: "Users"
                             }
                             return responseSuccess
                 
@@ -134,6 +136,7 @@ async function loginUsers(requestbody){
                     const loginResult = {
                         code: 200,
                         userId: userRegistered.id,
+                        role: userRegistered.role,
                         refresh_token: resultToken.refreshToken,
                         accessToken: resultToken.accessToken,
                     }

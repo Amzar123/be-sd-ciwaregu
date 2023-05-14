@@ -10,6 +10,9 @@ export const Teachers = db.define('teachers', {
     primaryKey: true,
     allowNull: false,
   },
+  nuptk: {
+    type: DataTypes.STRING,
+  },
   position: {
     type: DataTypes.STRING,
   },
@@ -28,4 +31,4 @@ export const Teachers = db.define('teachers', {
 });
 
 // Define association between Teachers and Users
-Teachers.belongsTo(Users, { foreignKey: 'userId' });
+Teachers.belongsTo(Users, { foreignKey: 'userId', as: 'teachersDetail' });

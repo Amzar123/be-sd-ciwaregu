@@ -11,9 +11,9 @@ const port = process.env.PORT || 3000;
 
 // import { Galleries } from './src/models/galleries.model.js';
 // import { Programs } from "./src/models/programs.model.js";
-import { Teachers } from "./src/models/teachers.model.js";
-import { Users } from "./src/models/users.model.js";
-import { Students } from "./src/models/students.model.js";
+// import { Teachers } from "./src/models/teachers.model.js";
+// import { Users } from "./src/models/users.model.js";
+// import { Students } from "./src/models/students.model.js";
 // import { Awards } from "./src/models/awards.model.js";
 // import { Candidate } from "./src/models/candidate.model.js";
 // import { Family } from "./src/models/family.model.js";
@@ -28,7 +28,7 @@ app.use(
   })
 );
 
-//connect to database
+// // connect to database
 // try {
 //   // db.authenticate();
 //   console.log('Database Connected....');
