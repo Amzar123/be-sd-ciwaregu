@@ -45,10 +45,10 @@ async function getMultiple(query){
   }
 }
 
-async function createGalleries(responseBody){
+async function createGalleries(request){
 
   // Get request Body
-  const { title, imageUrl, description } = responseBody
+  const { title, imageUrl, description } = request.body
   
   // Error message
   if (!title || !imageUrl || !description) {
@@ -109,7 +109,147 @@ async function createGalleries(responseBody){
   }
 }
 
+async function updateGalleriesById(request){
+
+  const { galleryId } = request.params
+
+  // Get request Body
+  const { title, imageUrl, description } = request.body
+  
+  // Error message
+  if (!title || !imageUrl || !description) {
+    let message = ""
+    
+      if (!title ) {
+        message += ", title"
+      }
+      
+      if (!imageUrl) {
+
+        message += ", imageUrl"
+      }
+
+      if (!description) {
+        message += ", description"
+      }
+    
+      return { 
+        status: 'Failed',
+        code: 400,
+        message: `Failed updating gallery${message} is empty!`
+      }
+    }
+    
+    try {
+
+      // Find the existing gallery by its id using the Galleries model
+      const existingGallery = await Galleries.findByPk(galleryId);
+
+      // Update the existing gallery record
+      const updatedGallery = await existingGallery.update({
+        title: title,
+        imageUrl: imageUrl,
+        description: description,
+        updatedAt: new Date()
+      });
+
+      // Return the updated gallery in the response
+      return {
+        status: "success",
+        code: 200,
+        message: 'Gallery updated successfully!',
+        data: {
+          galleryId: updatedGallery.id,
+          title: updatedGallery.title,
+          imageUrl: updatedGallery.imageUrl,
+          description: updatedGallery.description
+        }
+      }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error updating gallery!'
+    }
+  }
+}
+
+async function getById(request){
+  
+  const { galleryId } = request.params
+
+  try {
+
+    const dbResult = await Galleries.findOne({ where: { id: galleryId } });
+
+    if (!dbResult) {
+      return {
+        status: "Failed", 
+        code : 404,
+        message : 'Gallery not found!'
+      }
+    }
+
+    // Return the mapped galleries in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Fetching gallery successfully!',
+      data : dbResult
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error fetching gallery!'
+    }
+  }
+}
+
+async function deleteById(request){
+  
+  const { galleryId } = request.params
+
+  try {
+
+    const dbResult = await Galleries.findOne({ where: { id: galleryId } });
+
+    if (!dbResult) {
+      return {
+        status: "Failed", 
+        code : 404,
+        message : 'Gallery not found!'
+      }
+    }
+
+    // Delete the gallery by ID using the Galleries model
+    await dbResult.destroy();
+
+    // Return success message in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Gallery deleted successfully!'
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error deleting gallery!'
+    }
+  }
+}
+
 export default {
   getMultiple,
-  createGalleries
+  createGalleries,
+  updateGalleriesById,
+  getById,
+  deleteById
 }

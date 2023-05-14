@@ -1,10 +1,11 @@
 import UsersService from "../services/users.service.js";
 import ResponseClass from "../models/response.model.js";
+import { request } from "express";
 
 //get all users function
 const get = async(req, res) => {
     try {
-        const users = await UsersService.getUsers();
+        const users = await UsersService.getPpdb();
         res.json(users);
     } catch (error) {
         console.log(error);
@@ -39,7 +40,9 @@ const login = async(req, res) => {
             responseSuccess.message = "Login Success"
             responseSuccess.data = {
                 object: "authentication_token",
+                userId: loginResult.userId,
                 email: req.body.email,
+                roles: loginResult.roles,
                 authentication_token: loginResult.accessToken
             }
     
@@ -54,8 +57,24 @@ const login = async(req, res) => {
     }
 }
 
+const logout = async(req, res, next) => {
+    try {
+        var logoutResult = await UsersService.logoutUsers(req.headers.cookie);
+
+        if (logoutResult.code == 200) {
+            res.clearCookie('refreshToken')
+        }
+
+        res.json(logoutResult)
+    } catch (error) {
+        console.log(error);
+        next(error)
+    }
+}
+
 export default {
     get,
     login,
-    register
+    register,
+    logout
 }
