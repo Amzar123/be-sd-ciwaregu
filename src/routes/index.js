@@ -24,16 +24,17 @@ router.put('/v1/galleries/:galleryId', galleriesController.update);
 router.get('/v1/galleries/:galleryId', galleriesController.getById);
 router.delete('/v1/galleries/:galleryId', galleriesController.deletetById);
 
+/* GET teachers */
+router.get('/v1/teachers', teachersController.get);
+router.post('/v1/teachers', teachersController.create);
+router.put('/v1/teachers/:teacherId', teachersController.update);
+
 /*  programs */
 router.get('/v1/programs', programsController.get)
 router.post('/v1/programs', programsController.create)
 router.put('/v1/programs/:programId', programsController.update)
 router.delete('/v1/programs/:programId', programsController.deleteById)
 router.get('/v1/programs/:programId', programsController.getById)
-
-/* teachers */
-router.get('/v1/teachers', teachersController.get)
-router.post('/v1/teachers', teachersController.create)
 
 /* Stats */
 router.get('/v1/stats', statsController.get)

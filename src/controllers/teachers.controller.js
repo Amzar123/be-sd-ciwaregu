@@ -29,7 +29,26 @@ const create = async (req, res, next) => {
   }
 }
 
+const update = async (req, res, next) => {
+  try {
+    // Create data to DB
+    const data = await teachers.updateTeacherById(req);
+    // if Return "Created / 201"
+    if (data.code === 200)
+    {
+      // send response
+      return res.status(200).json(data);
+    }
+    // return Error
+    return res.status(400).json(data);
+  } catch (err) {
+    console.error(`Error while updating teacher`, err.message);
+    next(err);
+  }
+}
+
 export default {
   get,
-  create
+  create,
+  update
 }

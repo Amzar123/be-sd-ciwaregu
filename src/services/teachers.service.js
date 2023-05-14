@@ -94,8 +94,8 @@ async function createTeacher(responseBody){
         data: {
           teacherId: newTeacher.id,
           name: newTeacher.name,
-          imageUrl: newTeacher.imageUrl,
-          position: newTeacher.position
+          position: newTeacher.position,
+          imageUrl: newTeacher.imageUrl
         }
       }
     
@@ -109,7 +109,75 @@ async function createTeacher(responseBody){
   }
 }
 
+async function updateTeacherById(request){
+
+  const { teacherId } = request.params
+
+  // Get request Body
+  const { name, imageUrl, position } = request.body
+  
+  // Error message
+  if (!name || !imageUrl || !position) {
+    let message = ""
+    
+      if (!name ) {
+        message += ", name"
+      }
+      
+      if (!imageUrl) {
+
+        message += ", imageUrl"
+      }
+
+      if (!position) {
+        message += ", position"
+      }
+    
+      return { 
+        status: 'Failed',
+        code: 400,
+        message: `Failed updating teacher${message} is empty!`
+      }
+    }
+    
+    try {
+
+      // Find the existing gallery by its id using the Teachers model
+      const existingTeacher = await Teachers.findByPk(teacherId);
+
+      // Update the existing gallery record
+      const updatedTeacher = await existingTeacher.update({
+        name: name,
+        imageUrl: imageUrl,
+        position: position,
+        updatedAt: new Date()
+      });
+
+      // Return the updated gallery in the response
+      return {
+        status: "success",
+        code: 200,
+        message: 'Teacher updated successfully!',
+        data: {
+          teacherId: updatedTeacher.id,
+          name: updatedTeacher.name,
+          position: updatedTeacher.position,
+          imageUrl: updatedTeacher.imageUrl,
+        }
+      }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error updating teacher!'
+    }
+  }
+}
+
 export default {
   getMultiple,
-  createTeacher
+  createTeacher,
+  updateTeacherById
 }
