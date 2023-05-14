@@ -1,5 +1,7 @@
-/** @type {import('sequelize-cli').Migration} */
-export async function up(queryInterface, Sequelize) {
+const { DataTypes } = require('sequelize');
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
     /**
      * Add altering commands here.
      *
@@ -91,14 +93,14 @@ export async function up(queryInterface, Sequelize) {
         type: Sequelize.DATE
       }
     })
-}
-
-export async function down(queryInterface, Sequelize) {
-  /**
-   * Add reverting commands here.
-   *
-   * Example:
-   * await queryInterface.dropTable('users');
-   */
-  await queryInterface.dropTable('Candidates');
-}
+  },
+  down: async (queryInterface, Sequelize) => {
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
+    await queryInterface.dropTable('Candidates');
+  }
+};
