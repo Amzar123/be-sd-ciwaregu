@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import db from '../configs/db.config.js';
 
 // Galleries attribute database schema
-export const Guardian = db.define('Guardians', {
+export const Guardian = db.define('guardians', {
     id: {
         allowNull: false,
         primaryKey: true,
