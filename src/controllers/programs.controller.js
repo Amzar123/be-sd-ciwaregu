@@ -8,6 +8,36 @@ const get = async (req, res) => {
     }
 }
 
+const create = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.createPrograms(req.body));
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
+
+const update = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.updateProgramsById(req))
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+const deleteById = async(req, res, next) => {
+    try {
+        res.json(await ProgramsService.deleteProgramsById(req))
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
 export default{
-    get
+    get,
+    create,
+    update,
+    deleteById,
 }
