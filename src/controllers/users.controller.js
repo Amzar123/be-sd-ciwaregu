@@ -1,5 +1,6 @@
 import UsersService from "../services/users.service.js";
 import ResponseClass from "../models/response.model.js";
+import { request } from "express";
 
 //get all users function
 const get = async(req, res) => {
@@ -56,8 +57,24 @@ const login = async(req, res) => {
     }
 }
 
+const logout = async(req, res, next) => {
+    try {
+        var logoutResult = await UsersService.logoutUsers(req.headers.cookie);
+
+        if (logoutResult.code == 200) {
+            res.clearCookie('refreshToken')
+        }
+
+        res.json(logoutResult)
+    } catch (error) {
+        console.log(error);
+        next(error)
+    }
+}
+
 export default {
     get,
     login,
-    register
+    register,
+    logout
 }
