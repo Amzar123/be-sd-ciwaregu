@@ -200,6 +200,44 @@ async function loginUsers(requestbody){
     }
 }
 
+async function logoutUsers(request) {
+    var responseError = new ResponseClass.ErrorResponse()
+    var responseSuccess = new ResponseClass.SuccessWithNoDataResponse()
+    
+    if (!request) {
+        responseSuccess.code = 204
+        responseSuccess.message = "The Request did not return any content"
+        return responseSuccess
+    }
+
+    try {
+        const requestCookie = request.split("=");
+        const refreshToken = requestCookie[1]
+
+        const loginStudent = await Students.findOne({ where: { refresh_token: refreshToken } });
+        const loginTeacher = await Teachers.findOne({ where: { refresh_token: refreshToken } });
+    
+        if (loginStudent !== null) {
+          await Students.update({ refresh_token: null }, { where: { id: loginStudent.id } });
+        } else if (loginTeacher !== null) {
+          await Teachers.update({ refresh_token: null }, { where: { id: loginTeacher.id } });
+        } else {
+          responseSuccess.code = 204;
+          responseSuccess.message = "The Request did not return any content";
+          return responseSuccess;
+        }
+    
+        responseSuccess.code = 200;
+        responseSuccess.message = "You've Been Logged Out";
+        return responseSuccess;
+    } catch (error) {
+        console.log(error);
+        responseError.code = 500;
+        responseError.message = error;
+        return responseError;
+    }   
+}
+
 function generateToken(userRegistered) {
     const userId = userRegistered.id;
     const name = userRegistered.name;
@@ -226,5 +264,6 @@ function generateToken(userRegistered) {
 export default {
     getPpdb,
     registerUsers,
-    loginUsers
+    loginUsers,
+    logoutUsers
 };

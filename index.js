@@ -2,6 +2,7 @@ import express from "express";
 import db from './src/configs/db.config.js';
 import router from "./src/routes/index.js";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use(
 // }
 
 app.use(router);
+app.use(cookieParser())
 app.use(express.json())
 app.get('/', (req, res) => {
   res.json({'message': 'ok'});
