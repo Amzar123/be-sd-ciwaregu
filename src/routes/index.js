@@ -7,7 +7,6 @@ import galleriesController from '../controllers/galleries.controller.js';
 import programsController from "../controllers/programs.controller.js";
 import teachersController from "../controllers/teachers.controller.js";
 import statsController from "../controllers/stats.controller.js";
-import ppdbController from "../controllers/ppdb.controller.js";
 
 const router =  express.Router();
 
@@ -33,6 +32,4 @@ router.post('/v1/teachers', teachersController.create)
 /* GET Stats */
 router.get('/v1/stats', statsController.get)
 
-/* PPDB */
-router.post('/v1/ppdb', ppdbController)
 export default router;
