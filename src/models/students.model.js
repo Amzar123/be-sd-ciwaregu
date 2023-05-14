@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/db.config.js';
+import { Users } from './users.model.js';
 
 // Galleries attribute database schema
 export const Students = db.define('students', {
@@ -11,38 +12,13 @@ export const Students = db.define('students', {
   nis: {
     type: DataTypes.STRING,
   },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
-  email:{
-    type: DataTypes.STRING,
-    allowNull: false,
-    unique: true,
-  },
-  password:{
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  refresh_token:{
-    type: DataTypes.TEXT
-  },
-  imageUrl:{
-    type: DataTypes.STRING
-  },
   tmptLahir: {
     type: DataTypes.STRING,
-  },
-  tgllLahir: {
-    type: DataTypes.DATE,
   },
   jenisKel: {
     type: DataTypes.STRING,
   },
   agama: {
-    type: DataTypes.STRING,
-  },
-  alamat: {
     type: DataTypes.STRING,
   },
   tglMasuk: {
@@ -88,3 +64,6 @@ export const Students = db.define('students', {
 }, {
   freezeTableName: true
 });
+
+// Define association between Teachers and Users
+Students.belongsTo(Users, { foreignKey: 'userId' });
