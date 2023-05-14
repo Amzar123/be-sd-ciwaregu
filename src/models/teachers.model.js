@@ -10,6 +10,9 @@ export const Teachers = db.define('teachers', {
     primaryKey: true,
     allowNull: false,
   },
+  nuptk: {
+    type: DataTypes.STRING,
+  },
   position: {
     type: DataTypes.STRING,
   },
