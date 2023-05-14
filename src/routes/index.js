@@ -8,6 +8,7 @@ import programsController from "../controllers/programs.controller.js";
 import teachersController from "../controllers/teachers.controller.js";
 import statsController from "../controllers/stats.controller.js";
 import ppdbController from "../controllers/ppdb.controller.js";
+import profileController from "../controllers/profile.controller.js";
 
 const router =  express.Router();
 
@@ -41,5 +42,8 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post('/v1/ppdb', ppdbController.create)
+
+/* Profile */
+router.get('/v1/profile/:userId', profileController.getById)
 
 export default router;

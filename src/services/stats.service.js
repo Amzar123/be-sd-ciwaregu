@@ -9,9 +9,9 @@ async function getStats(){
     var responseSuccess = new ResponseClass.SuccessResponse()
     try {
         const countResult = {
-            teacherCount: await Programs.count(),
+            teacherCount: await Teachers.count(),
             studentCount: await Students.count(),
-            programCount: await Teachers.count(),
+            programCount: await Programs.count(),
             awardCount: await Awards.count()
         }
         
