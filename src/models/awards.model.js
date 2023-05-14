@@ -3,7 +3,7 @@ import db from '../configs/db.config.js';
 
 //programms attribute users schema
 export const Awards = db.define("awards", {
-    awardId:{
+    id:{
         type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
