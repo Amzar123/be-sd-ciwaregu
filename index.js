@@ -28,7 +28,7 @@ app.use(
   })
 );
 
-// // connect to database
+// connect to database
 // try {
 //   // db.authenticate();
 //   console.log('Database Connected....');
