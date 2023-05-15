@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken } from "../middlewares/VerifyToken.js";
+import { verifyToken, adminVerifyToken } from "../middlewares/VerifyToken.js";
 
 // import controller
 import usersController from "../controllers/users.controller.js";
@@ -13,30 +13,29 @@ import profileController from "../controllers/profile.controller.js";
 const router =  express.Router();
 
 /*  */
-router.get('/v1/ppdb', verifyToken, usersController.get);
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
 router.delete('/v1/logout', usersController.logout)
 
 /* galleries */
-router.post('/v1/galleries', galleriesController.create);
+router.post('/v1/galleries', adminVerifyToken ,galleriesController.create);
 router.get('/v1/galleries', galleriesController.get);
-router.put('/v1/galleries/:galleryId', galleriesController.update);
+router.put('/v1/galleries/:galleryId', adminVerifyToken ,galleriesController.update);
 router.get('/v1/galleries/:galleryId', galleriesController.getById);
-router.delete('/v1/galleries/:galleryId', galleriesController.deleteById);
+router.delete('/v1/galleries/:galleryId', adminVerifyToken, galleriesController.deleteById);
 
 /* GET teachers */
 router.get('/v1/teachers', teachersController.get);
-router.post('/v1/teachers', teachersController.create);
+router.post('/v1/teachers', adminVerifyToken, teachersController.create);
 router.put('/v1/teachers/:teacherId', teachersController.update);
 router.get('/v1/teachers/:teacherId', teachersController.getById);
-router.delete('/v1/teachers/:teacherId', teachersController.deleteById);
+router.delete('/v1/teachers/:teacherId', adminVerifyToken, teachersController.deleteById);
 
 /*  programs */
 router.get('/v1/programs', programsController.get)
-router.post('/v1/programs', programsController.create)
-router.put('/v1/programs/:programId', programsController.update)
-router.delete('/v1/programs/:programId', programsController.deleteById)
+router.post('/v1/programs', adminVerifyToken, programsController.create)
+router.put('/v1/programs/:programId', adminVerifyToken, programsController.update)
+router.delete('/v1/programs/:programId', adminVerifyToken, programsController.deleteById)
 router.get('/v1/programs/:programId', programsController.getById)
 
 /* Stats */
@@ -44,6 +43,7 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post('/v1/ppdb', ppdbController.create)
+router.get('/v1/ppdb', verifyToken, usersController.get);
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)

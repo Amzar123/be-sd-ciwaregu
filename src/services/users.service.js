@@ -194,15 +194,31 @@ function generateToken(userRegistered) {
     const userId = userRegistered.id;
     const name = userRegistered.name;
     const email = userRegistered.email;
-    //create access token for authorization using jwt
-    const accessToken = jwt.sign({userId, name, email}, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '120s'
-    })
 
-    //create refresh token using jwt
-    const refreshToken = jwt.sign({userId, name, email}, process.env.REFRESH_TOKEN_SECRET, {
-        expiresIn: '1d'
-    })
+    var accessToken
+    var refreshToken
+
+    if (userRegistered.role == "Admin") {
+        //create access token for authorization using jwt
+        accessToken = jwt.sign({userId, name, email}, process.env.ADMIN_ACCESS_TOKEN_SECRET, {
+            expiresIn: '120s'
+        })
+
+        //create refresh token using jwt
+        refreshToken = jwt.sign({userId, name, email}, process.env.ADMIN_REFRESH_TOKEN_SECRET, {
+            expiresIn: '1d'
+        })
+    }else{
+        //create access token for authorization using jwt
+        accessToken = jwt.sign({userId, name, email}, process.env.ACCESS_TOKEN_SECRET, {
+            expiresIn: '120s'
+        })
+
+        //create refresh token using jwt
+        refreshToken = jwt.sign({userId, name, email}, process.env.REFRESH_TOKEN_SECRET, {
+            expiresIn: '1d'
+        })
+    }
 
     const token = {
         refreshToken: refreshToken,
@@ -211,6 +227,7 @@ function generateToken(userRegistered) {
 
     return token
 }
+
 
 
 export default {
