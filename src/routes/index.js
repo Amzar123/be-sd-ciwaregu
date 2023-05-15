@@ -43,7 +43,7 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post('/v1/ppdb', ppdbController.create)
-router.get('/v1/ppdb', verifyToken, usersController.get);
+router.get('/v1/ppdb', ppdbController.get);
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)
