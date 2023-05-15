@@ -14,7 +14,6 @@ async function registerPPDB(request){
       
       try {
         const {
-            studentId,
             namaLengkap,
             namaPanggilan, 
             jenisKelamin,
@@ -37,12 +36,12 @@ async function registerPPDB(request){
             berkas,
             wali
         } = request.body
+
+        const candidateId = uuidv4()
   
         // Create new gallery record using the Galleries model
         const newCandidate = await Candidate.create({
-          id: uuidv4(),
-          studentId,
-          studentId,
+          id: candidateId,
           namaLengkap,
           namaPanggilan, 
           jenisKelamin,
@@ -88,7 +87,8 @@ async function registerPPDB(request){
             pekerjaanIbu,
             penghasilanIbu,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            candidateId: candidateId
           });
         } else if (wali !== null) {
           const {
@@ -105,26 +105,26 @@ async function registerPPDB(request){
             pekerjaan,
             penghasilan,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            candidateId: candidateId
           });
         }
 
         if (berkas !== null) {
           const {
-            nama,
-            jenis,
-            ukuran,
-            url
+            pasPotoUrl,
+            aktaUrl,
+            kkUrl
           } = berkas
           // Create new gallery record using the Galleries model
           newBerkas = await Document.create({
             id: uuidv4(),
-            nama,
-            jenis,
-            ukuran,
-            url,
+            pasPotoUrl,
+            aktaUrl,
+            kkUrl,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            candidateId: candidateId
           });
         }
 
