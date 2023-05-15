@@ -63,7 +63,7 @@ const getById = async (req, res, next) => {
   }
 }
 
-const deletetById = async (req, res, next) => {
+const deleteById = async (req, res, next) => {
   try {
     const data = await galleries.deleteById(req);
 
@@ -85,5 +85,5 @@ export default {
   create,
   update,
   getById,
-  deletetById
+  deleteById
 }

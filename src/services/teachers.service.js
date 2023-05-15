@@ -267,9 +267,49 @@ async function getById(request){
   }
 }
 
+async function deleteById(request){
+  
+  const { teacherId } = request.params
+
+  try {
+
+    const dbResult = await Teachers.findOne({ where: { id: teacherId } });
+
+    const userResult = await Users.findOne({ where: { id: dbResult.userId } });
+
+    if (!dbResult) {
+      return {
+        status: "Failed", 
+        code : 404,
+        message : 'Teacher not found!'
+      }
+    }
+
+    // Delete the gallery by ID using the Galleries model
+    await dbResult.destroy();
+    await userResult.destroy();
+
+    // Return success message in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Teacher deleted successfully!'
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error deleting Teacher!'
+    }
+  }
+}
+
 export default {
   getMultiple,
   createTeacher,
   updateTeacherById,
-  getById
+  getById,
+  deleteById
 }
