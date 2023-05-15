@@ -41,8 +41,18 @@ const update = async (req, res, next) => {
   }
 }
 
+const getByStatus = async(req, res, next) => {
+  try {
+    return res.json(await ppdb.getHasilPpdb(req.query))
+  } catch (err) {
+    console.error(`Error while getting ppdb`, err.message);
+    next(err);
+  }
+}
+
 export default{
     create,
     get,
-    update
+    update,
+    getByStatus
 }
