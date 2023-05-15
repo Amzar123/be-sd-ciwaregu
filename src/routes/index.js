@@ -46,6 +46,7 @@ router.post('/v1/ppdb', ppdbController.create)
 // kade verify token admin
 router.get('/v1/ppdb', ppdbController.get)
 router.put('/v1/ppdb/:candidateId', ppdbController.update)
+router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)

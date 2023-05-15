@@ -6,6 +6,7 @@ import { Candidate } from "../models/candidate.model.js";
 import { Family } from "../models/family.model.js";
 import { Document } from "../models/document.model.js";
 import { Guardian } from "../models/guardian.model.js";
+import ResponseClass from "../models/response.model.js";
 
 async function registerPPDB(request){
     // Get request Body
@@ -214,9 +215,44 @@ async function updateVerifyPPDB(request){
   }
 }
 
+async function getHasilPpdb(query) {
+  
+  const { status, createdAt } = query
+  const whereClause = {};
+  var responseSuccess = new ResponseClass.SuccessResponse
+  var responseError = new ResponseClass.ErrorResponse
+
+  try {
+    
+    if (status) {
+      whereClause.status = status
+    }
+    if (createdAt) {
+      whereClause.createdAt = {
+        [Op.between]: [createdAt, new Date("2023-05-16")]
+      }
+    }
+
+    const ppdbResult = await Candidate.findAll({
+      where: whereClause,
+      attributes: ['id', 'namaLengkap', 'noPendaftaran', 'sekolahAsal','jenisKelamin', 'status']
+    })
+
+    responseSuccess.message = "get hasil ppdb successfull!"
+    responseSuccess.data = ppdbResult
+    return responseSuccess
+
+  } catch (error) {
+    console.log(error)
+    responseError.message = "Failed to access database"
+    return responseError
+  }
+}
+
 export default {
   registerPPDB,
   getPPDB,
-  updateVerifyPPDB
+  updateVerifyPPDB,
+  getHasilPpdb
 }
   
