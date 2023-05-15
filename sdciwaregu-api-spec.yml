@@ -59,11 +59,13 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/authenticationTokenResponse'
+        202:
+          $ref: '#/components/responses/adminLoginResponse'
         400:
           $ref: '#/components/responses/clientError'
         500:
           $ref: '#/components/responses/serverError'
-  
+
   #endpoint logout
   /v1/logout:
     delete:
@@ -569,6 +571,23 @@ components:
               user_id: "1"
               role: "Users"
               email: "asdfgh45@gmail.com"
+              authentication_token: "azJRj09l7jvR8KhTqUs3"
+    
+    loginAdminResponseSchema:
+      allOf:
+        - $ref: '#/components/schemas/baseResponseSchema'
+        - type: object
+          properties:
+            data:
+              type: object
+              $ref: '#/components/schemas/authenticationTokenSchema'
+          required: 
+            - data
+          example:
+            data:
+              user_id: "1"
+              role: "Admin"
+              email: "admin@gmail.com"
               authentication_token: "azJRj09l7jvR8KhTqUs3"
     
     logoutResponseSchema:
@@ -1404,12 +1423,19 @@ components:
             $ref: '#/components/schemas/unauthorizedErrorSchema'
 
     authenticationTokenResponse:
-      description: Login Authentication token response
+      description: User Login Authentication response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/loginResponseSchema'
     
+    adminLoginResponse:
+      description: Admin Login Authentication response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/loginAdminResponseSchema'
+
     logoutResponse:
       description: Logout User
       content:
