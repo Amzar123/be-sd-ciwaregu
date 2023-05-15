@@ -27,7 +27,22 @@ const get = async (req, res, next) => {
   }
 }
 
+const update = async (req, res, next) => {
+  try {
+    // Create data to DB
+    const data = await ppdb.updateVerifyPPDB(req);
+    // if Return "Created / 201"
+    // send response
+      return res.status(200).json(data);
+    // return Error
+  } catch (err) {
+    console.error(`Error while updating teacher`, err.message);
+    next(err);
+  }
+}
+
 export default{
     create,
-    get
+    get,
+    update
 }

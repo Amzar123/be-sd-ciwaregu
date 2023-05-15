@@ -155,7 +155,7 @@ async function registerPPDB(request){
         message : 'Error creating ppdb!'
       }
     }
-  }
+}
   
 async function getPPDB(){
 
@@ -183,8 +183,40 @@ async function getPPDB(){
   }
 }
 
-  export default {
-    registerPPDB,
-    getPPDB
+async function updateVerifyPPDB(request){
+
+  const { candidateId } = request.params
+    
+    try {
+      // Find the existing gallery by its id using the Teachers model
+      const existingCandidate = await Candidate.findByPk(candidateId);
+
+      // Update the existing gallery record
+      const updateCandidate = await existingCandidate.update({
+        status: 'verified',
+        updatedAt: new Date()
+      });
+
+      // Return the updated gallery in the response
+      return {
+        status: "success",
+        code: 200,
+        message: updateCandidate.namaLengkap + ', ' + existingCandidate.noPendaftaran + ' verified successfully!'
+      }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error updating PPDB!'
+    }
   }
+}
+
+export default {
+  registerPPDB,
+  getPPDB,
+  updateVerifyPPDB
+}
   

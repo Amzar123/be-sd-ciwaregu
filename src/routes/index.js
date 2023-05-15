@@ -43,7 +43,9 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post('/v1/ppdb', ppdbController.create)
-router.get('/v1/ppdb', ppdbController.get);
+// kade verify token admin
+router.get('/v1/ppdb', ppdbController.get)
+router.put('/v1/ppdb/:candidateId', ppdbController.update)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)
