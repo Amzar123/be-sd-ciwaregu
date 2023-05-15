@@ -29,6 +29,7 @@ router.delete('/v1/galleries/:galleryId', galleriesController.deletetById);
 router.get('/v1/teachers', teachersController.get);
 router.post('/v1/teachers', teachersController.create);
 router.put('/v1/teachers/:teacherId', teachersController.update);
+router.get('/v1/teachers/:teacherId', teachersController.getById);
 
 /*  programs */
 router.get('/v1/programs', programsController.get)

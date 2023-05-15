@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 // import { query } from "../configs/db.config.js";
+import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from 'uuid';
 import { v5 as uuidv5 } from 'uuid';
 import { Teachers } from "../models/teachers.model.js";
@@ -7,7 +8,7 @@ import { Users } from '../models/users.model.js';
 
 async function getMultiple(query){
   
-  const { name, imageUrl, position, email, nuptk } = query;
+  const { name, imageUrl, jenisPTK, email, nuptk } = query;
 
   try {
 
@@ -21,9 +22,9 @@ async function getMultiple(query){
     if (imageUrl) {
       whereClause.imageUrl = imageUrl;
     }
-    if (position) {
-      whereClause.position = {
-        [Op.iLike]: `%${position}%`, // use case-insensitive LIKE operator
+    if (jenisPTK) {
+      whereClause.jenisPTK = {
+        [Op.iLike]: `%${jenisPTK}%`, // use case-insensitive LIKE operator
       };
     }
     if (nuptk) {
@@ -41,7 +42,8 @@ async function getMultiple(query){
           as: 'teachersDetail',
           attributes: ['name', 'email', 'imageUrl'] 
         } 
-      ]
+      ],
+      attributes: ['id', 'jenisPTK']
     });
     
 
@@ -66,22 +68,18 @@ async function getMultiple(query){
 async function createTeacher(responseBody) {
 
   // Get request Body
-  const { name, imageUrl, position, email, nuptk } = responseBody;
+  const { name, imageUrl, jenisPTK, email } = responseBody;
 
   // Error handling
-  if (!name || !position || !nuptk ) {
+  if (!name || !jenisPTK ) {
     const missingFields = [];
 
     if (!name) {
       missingFields.push('name');
     }
 
-    if (!position) {
-      missingFields.push('position');
-    }
-
-    if (!nuptk) {
-      missingFields.push('nuptk');
+    if (!jenisPTK) {
+      missingFields.push('jenisPTK');
     }
 
     return {
@@ -103,14 +101,19 @@ async function createTeacher(responseBody) {
     const shortUuid = uuidv5('mystring', userId).slice(0, 8);
     const defaultEmail = 'tsdc' + shortUuid + '@sdciwaregu.com'
     const finalEmail = email || defaultEmail;
+
+    // hash new password
+    const salt = await bcrypt.genSalt();
+    const hashPass = await bcrypt.hash("Gurusdciwaregu123", salt);
     
     // Create new user record using the Users model
     const newUser = await Users.create({
       id: userId,
       name: name,
       email: finalEmail,
-      password: "Gurusdciwaregu123",
+      password: hashPass,
       imageUrl: finalImageUrl,
+      role: "Teachers",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -118,8 +121,7 @@ async function createTeacher(responseBody) {
     // Create new teacher record using the Teachers model
     const newTeacher = await Teachers.create({
       id: uuidv4(),
-      nuptk: nuptk,
-      position: position,
+      jenisPTK: jenisPTK,
       createdAt: new Date(),
       updatedAt: new Date(),
       userId: userId
@@ -134,8 +136,7 @@ async function createTeacher(responseBody) {
         teacherId: newTeacher.id,
         name: newUser.name,
         email: newUser.email,
-        nuptk: newTeacher.nuptk,
-        position: newTeacher.position,
+        jenisPTK: newTeacher.jenisPTK,
         imageUrl: newUser.imageUrl
       }
     };
@@ -155,26 +156,22 @@ async function updateTeacherById(request){
   const { teacherId } = request.params
 
   // Get request Body
-  const { name, imageUrl, position, email, nuptk } = request.body;
+  const { name, imageUrl, jenisPTK, email } = request.body;
 
   // Error handling
-  if (!name || !position || !nuptk || !email) {
+  if (!name || !jenisPTK || !email) {
       const missingFields = [];
 
       if (!name) {
         missingFields.push('name');
       }
 
-      if (!position) {
-        missingFields.push('position');
+      if (!jenisPTK) {
+        missingFields.push('jenisPTK');
       }
 
       if (!email) {
         missingFields.push('email');
-      }
-
-      if (!nuptk) {
-        missingFields.push('nuptk');
       }
 
       return {
@@ -194,8 +191,7 @@ async function updateTeacherById(request){
 
       // Update the existing gallery record
       const updatedTeacher = await existingTeacher.update({
-        nuptk: nuptk,
-        position: position,
+        jenisPTK: jenisPTK,
         updatedAt: new Date()
       });
 
@@ -217,8 +213,7 @@ async function updateTeacherById(request){
           teacherId: updatedTeacher.id,
           name: updatedUserTeacher.name,
           email: updatedUserTeacher.email,
-          nuptk: updatedTeacher.nuptk,
-          position: updatedTeacher.position,
+          jenisPTK: updatedTeacher.jenisPTK,
           imageUrl: updatedUserTeacher.imageUrl,
         }
       }
@@ -233,8 +228,48 @@ async function updateTeacherById(request){
   }
 }
 
+async function getById(request){
+  
+  const { teacherId } = request.params
+
+
+  try {
+
+
+    const dbResult = await Teachers.findOne({ 
+      where: { id: teacherId }, 
+      include: [
+        { 
+          model: Users, 
+          as: 'teachersDetail',
+          attributes: ['name', 'email', 'imageUrl'] 
+        } 
+      ],
+      attributes: ['id', 'jenisPTK']
+    });
+    
+
+    // Return the mapped Teachers in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Fetching teacher successfully!',
+      data : dbResult
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error fetching teacher!'
+    }
+  }
+}
+
 export default {
   getMultiple,
   createTeacher,
-  updateTeacherById
+  updateTeacherById,
+  getById
 }

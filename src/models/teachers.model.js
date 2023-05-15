@@ -13,7 +13,37 @@ export const Teachers = db.define('teachers', {
   nuptk: {
     type: DataTypes.STRING,
   },
-  position: {
+  nip: {
+    type: DataTypes.STRING,
+  },
+  jenisKelamin: {
+    type: DataTypes.STRING,
+  },
+  tempatLahir: {
+    type: DataTypes.STRING,
+  },
+  tanggalLahir: {
+    type: DataTypes.DATE,
+  },
+  jenisPTK: {
+    type: DataTypes.STRING,
+  },
+  statusKepegawaian: {
+    type: DataTypes.STRING,
+  },
+  gelarDepan: {
+    type: DataTypes.STRING,
+  },
+  gelarBelakang: {
+    type: DataTypes.STRING,
+  },
+  jenjang: {
+    type: DataTypes.STRING,
+  },
+  jurusanProdi: {
+    type: DataTypes.STRING,
+  },
+  sertifikasi: {
     type: DataTypes.STRING,
   },
   createdAt: {
