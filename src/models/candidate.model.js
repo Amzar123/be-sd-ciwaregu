@@ -1,23 +1,12 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/db.config.js';
+import { Students } from './students.model.js';
 
 // Galleries attribute database schema
 export const Candidate = db.define('candidates', {
     id: {
         allowNull: false,
         primaryKey: true,
-        type: DataTypes.STRING
-    },
-    studentId: {
-        allowNull: true,
-        type: DataTypes.STRING
-    },
-    guardianId: {
-        allowNull: true,
-        type: DataTypes.STRING
-    },
-    familyId: {
-        allowNull: true,
         type: DataTypes.STRING
     },
     namaLengkap: {
@@ -85,7 +74,18 @@ export const Candidate = db.define('candidates', {
     updatedAt: {
         allowNull: false,
         type: DataTypes.DATE
-    }
+    },
+    status: {
+        type: DataTypes.STRING,
+        values: ['waiting']
+    },
 }, {
     freezeTableName: true
+});
+
+// Define association between Teachers and Users
+Candidate.belongsTo(Students, { 
+    foreignKey: 'studentId', 
+    as: 'documentCandidate', 
+    onDelete: 'CASCADE' 
 });

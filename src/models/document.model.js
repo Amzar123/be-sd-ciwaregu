@@ -1,41 +1,38 @@
 import { DataTypes } from 'sequelize';
 import db from '../configs/db.config.js';
+import { Candidate } from './candidate.model.js'; 
 
 // Galleries attribute database schema
 export const Document = db.define('documents', {
     id: {
-        allowNull: false,
-        primaryKey: true,
-        type: DataTypes.STRING
-      },
-      candidateId: {
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      nama: {
-        allowNull: true,
-        type: DataTypes.STRING
-      },
-      jenis: {
-        allowNull: false,
-        type: DataTypes.STRING
-      },
-      ukuran: {
-        allowNull: false,
-        type: DataTypes.INTEGER
-      },
-      url: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      createdAt: {
-        allowNull: false,
-        type: DataTypes.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: DataTypes.DATE
-      }
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.STRING
+    },
+    pasPotoUrl: {
+      type: DataTypes.STRING
+    },
+    aktaUrl: {
+      type: DataTypes.STRING
+    },
+    kkUrl: {
+      type: DataTypes.STRING
+    },
+    createdAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      allowNull: false,
+      type: DataTypes.DATE
+    }
 }, {
     freezeTableName: true
+});
+
+// Define association between Teachers and Users
+Document.belongsTo(Candidate, { 
+  foreignKey: 'candidateId', 
+  as: 'documentCandidate', 
+  onDelete: 'CASCADE' 
 });
