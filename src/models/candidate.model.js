@@ -9,6 +9,10 @@ export const Candidate = db.define('candidates', {
         primaryKey: true,
         type: DataTypes.STRING
     },
+    noPendaftaran : {
+        allowNull: false,
+        type: DataTypes.STRING
+    },
     namaLengkap: {
         allowNull: false,
         type: DataTypes.STRING

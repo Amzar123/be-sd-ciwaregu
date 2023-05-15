@@ -13,11 +13,21 @@ const create = async (req, res, next) => {
       // return Error
       return res.status(400).json(data);
     } catch (err) {
-      console.error(`Error while creating gallery`, err.message);
+      console.error(`Error while creating ppdb`, err.message);
       next(err);
     }
 }
 
+const get = async (req, res, next) => {
+  try {
+    res.json(await ppdb.getPPDB());
+  } catch (err) {
+      console.error(`Error while getting ppdb`, err.message);
+      next(err);
+  }
+}
+
 export default{
-    create
+    create,
+    get
 }

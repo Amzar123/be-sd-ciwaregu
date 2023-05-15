@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 // import { query } from "../configs/db.config.js";
 import { v4 as uuidv4 } from 'uuid';
+import { v5 as uuidv5 } from 'uuid';
 import { Candidate } from "../models/candidate.model.js";
 import { Family } from "../models/family.model.js";
 import { Document } from "../models/document.model.js";
@@ -38,10 +39,13 @@ async function registerPPDB(request){
         } = request.body
 
         const candidateId = uuidv4()
+        const shortUuid = uuidv5('mystring', candidateId).slice(0, 8);
+        const noPendaftaran = 'reg-' + shortUuid
   
         // Create new gallery record using the Galleries model
         const newCandidate = await Candidate.create({
           id: candidateId,
+          noPendaftaran,
           namaLengkap,
           namaPanggilan, 
           jenisKelamin,
@@ -61,7 +65,8 @@ async function registerPPDB(request){
           noTelp,
           sekolahAsal,
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          status: 'waiting'
         });
 
         if (keluarga !== null) {
@@ -152,7 +157,34 @@ async function registerPPDB(request){
     }
   }
   
+async function getPPDB(){
+
+  try {
+
+    const dbResult = await Candidate.findAll({ 
+      attributes: ['id', 'namaLengkap', 'noPendaftaran', 'status', 'createdAt']
+    });
+    
+    // Return the mapped Teachers in the response
+    return {
+      status: "success", 
+      code : 200,
+      message : 'Fetching PPDB successfully!',
+      data : dbResult
+    }
+    
+  } catch (err) {
+    console.error(err);
+    return {
+      status: "Failed", 
+      code : 400,
+      message : 'Error fetching PPDB!'
+    }
+  }
+}
+
   export default {
-    registerPPDB
+    registerPPDB,
+    getPPDB
   }
   
