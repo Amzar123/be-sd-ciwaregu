@@ -54,6 +54,7 @@ router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 router.get('/v1/students', studentsController.get)
 router.get('/v1/students/:studentId', studentsController.getById)
 router.delete('/v1/students/:studentId', studentsController.deleteByid)
+router.put('/v1/students/:studentId', studentsController.update)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)

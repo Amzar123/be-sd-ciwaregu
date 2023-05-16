@@ -108,11 +108,114 @@ async function deleteStudentsById(request){
         responseError.code = 500
         return responseError
     }
-  }
+}
+
+async function updateStudentsById(request) {
+
+    var responseSuccess = new ResponseClass.SuccessWithNoDataResponse
+    var responseError = new ResponseClass.ErrorResponse
+
+    const { studentId } = request.params
+    const {
+        nis, 
+        name, 
+        email, 
+        imageUrl, 
+        address, 
+        tanggalLahir, 
+        tmptLahir, 
+        jenisKel, 
+        agama, 
+        noTelp,
+        namaAyah,
+        pekerjaanAyah,
+        namaIbu,
+        pekerjaanIbu,
+        namaWali,
+        pekerjaanWali
+    } = request.body
+
+    if (!nis || !jenisKel || !name || !email || !tanggalLahir || !tmptLahir || !address) {
+        const missingFields = [];
+
+        if (!nis) {
+            missingFields.push('nis');
+        }
+
+        if (!name) {
+            missingFields.push('name');
+        }
+
+        if (!email) {
+            missingFields.push('email');
+        }
+
+        if (!jenisKel) {
+            missingFields.push('jenisKel');
+        }
+
+        if (!tanggalLahir) {
+            missingFields.push('tanggalLahir');
+        }
+
+        if (!tmptLahir) {
+            missingFields.push('tmptLahir');
+        }
+
+        if (!address) {
+            missingFields.push('address')
+        }
+
+        responseError.message = `Failed creating teacher. Missing fields: ${missingFields.join(', ')}.`
+        return responseError
+    }
+    
+    try {
+        // Find the existing gallery by its id using the Teachers model
+        const existingStudent = await Students.findByPk(studentId);
+  
+        // Update the existing gallery record
+        const updatedStudent= await existingStudent.update({
+            nis: nis,
+            tmptLahir: tmptLahir,
+            jenisKel: jenisKel,
+            agama: agama, 
+            noTelp: noTelp,
+            namaAyah: namaAyah,
+            pekerjaanAyah: pekerjaanAyah,
+            namaIbu: namaIbu,
+            pekerjaanIbu: pekerjaanIbu,
+            namaWali: namaWali,
+            pekerjaanWali: pekerjaanWali,
+            updatedAt: new Date()
+        });
+  
+        const existingUserStudent= await Users.findByPk(updatedStudent.userId);
+  
+        await existingUserStudent.update({
+          name: name,
+          email: email,
+          tanggalLahir: tanggalLahir,
+          address: address,
+          imageUrl: imageUrl,
+          updatedAt: new Date()
+        });
+
+        responseSuccess.message = `Updated Student with ${nis} successfull!`
+        return responseSuccess
+      
+    } catch (err) {
+        console.error(err)
+        responseError.message = "Internal Server Error"
+        responseError.code = 500
+        return responseError
+    }
+}
   
 
 export default {
     getMultipleStudents,
     getDetailsStudents,
     deleteStudentsById,
+    updateStudentsById,
 }

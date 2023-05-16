@@ -2,7 +2,7 @@ import teachers from "../services/teachers.service.js";
 
 const get = async (req, res, next) => {
   try {
-    res.json(await teachers.getMultiple(req.query));
+    res.json(await teachers.getMultiple());
   } catch (err) {
 
       console.error(`Error while getting teachers`, err.message);
