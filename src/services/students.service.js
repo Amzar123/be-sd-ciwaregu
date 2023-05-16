@@ -32,7 +32,7 @@ async function getMultipleStudents(query) {
                     attributes: ['name', 'email', 'imageUrl'],
                 }
             ],
-            attributes: ['nis', 'jenisKel', 'tglMasuk']
+            attributes: ['id', 'nis', 'jenisKel', 'tglMasuk']
         })
 
         responseSuccess.message = "Get data students successfull!"
@@ -43,9 +43,37 @@ async function getMultipleStudents(query) {
         responseError.message = "Internal Server Error"
         return responseError
     }
+}
 
+async function getDetailsStudents(request) {
+
+    const {studentId} = request.params
+    var responseSuccess = new ResponseClass.SuccessResponse
+    var responseError = new ResponseClass.ErrorResponse
+    
+    try {
+        const dbResult = await Students.findOne({ 
+            where: { id: studentId }, 
+            include: [
+                { 
+                    model: Users, 
+                    as: 'studentsDetail',
+                    attributes: ['name', 'email', 'imageUrl'] 
+                } 
+            ],
+        });
+
+        responseSuccess.message = `Get details student ${dbResult.nis} successfull!`
+        responseSuccess.data = dbResult
+        return responseSuccess
+    } catch (error) {
+        console.log(error)
+        responseError.message = "Internal Server Error"
+        return responseError
+    }
 }
 
 export default {
     getMultipleStudents,
+    getDetailsStudents,
 }
