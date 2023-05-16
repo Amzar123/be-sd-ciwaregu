@@ -41,6 +41,7 @@ async function getMultipleStudents(query) {
     } catch (error) {
         console.log(error)
         responseError.message = "Internal Server Error"
+        responseError.code = 500
         return responseError
     }
 }
@@ -69,11 +70,49 @@ async function getDetailsStudents(request) {
     } catch (error) {
         console.log(error)
         responseError.message = "Internal Server Error"
+        responseError.code = 500
         return responseError
     }
 }
 
+async function deleteStudentsById(request){
+  
+    const { studentId } = request.params
+    var responseSuccess = new ResponseClass.SuccessWithNoDataResponse
+    var responseError = new ResponseClass.ErrorResponse
+  
+    try {
+  
+        const dbResult = await Students.findOne({ where: { id: studentId } });
+    
+        const userResult = await Users.findOne({ where: { id: dbResult.userId } });
+    
+        if (!dbResult) {
+            responseError.message = "Student not found in database"
+            return responseError
+        }
+
+        const deletedNis = dbResult.nis
+    
+        // Delete the gallery by ID using the Galleries model
+        await dbResult.destroy();
+        await userResult.destroy();
+    
+        // Return success message in the response
+        responseSuccess.message = `Delete Student with ${deletedNis} successfull!`
+        return responseSuccess
+      
+    } catch (err) {
+        console.error(err);
+        responseError.message = "Internal Server Error"
+        responseError.code = 500
+        return responseError
+    }
+  }
+  
+
 export default {
     getMultipleStudents,
     getDetailsStudents,
+    deleteStudentsById,
 }

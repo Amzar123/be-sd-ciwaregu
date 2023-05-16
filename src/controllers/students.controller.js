@@ -18,7 +18,17 @@ const getById = async(req, res, next) => {
     }
 }
 
+const deleteByid = async(req, res, next) => {
+    try {
+        res.json(await studentsService.deleteStudentsById(req));
+    } catch (err) {
+        console.error(`Error while delete students`, err.message);
+        next(err);
+    }
+}
+
 export default {
     get,
     getById,
+    deleteByid,
 }
