@@ -53,6 +53,7 @@ router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 /* Students (Admin) */
 router.get('/v1/students', studentsController.get)
 router.get('/v1/students/:studentId', studentsController.getById)
+router.delete('/v1/students/:studentId', studentsController.deleteByid)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)
