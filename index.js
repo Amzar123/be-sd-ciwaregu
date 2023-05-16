@@ -1,5 +1,6 @@
 import express from "express";
 import db from './src/configs/db.config.js';
+import cors from 'cors'
 import router from "./src/routes/index.js";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -27,6 +28,10 @@ app.use(
     extended: true,
   })
 );
+app.use(cors({
+  origin: '*',
+  allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 // connect to database
 // try {

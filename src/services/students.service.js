@@ -166,7 +166,7 @@ async function updateStudentsById(request) {
             missingFields.push('address')
         }
 
-        responseError.message = `Failed creating teacher. Missing fields: ${missingFields.join(', ')}.`
+        responseError.message = `Failed creating students. Missing fields: ${missingFields.join(', ')}.`
         return responseError
     }
     
