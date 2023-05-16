@@ -37,7 +37,7 @@ async function updateProfile(request) {
     var responseError = new ResponseClass.ErrorResponse()
     var responseSuccess = new ResponseClass.SuccessWithNoDataResponse()
 
-    const {name, email, address, password, confirmPass, birthDate, imageUrl} = request.body
+    const {name, email, address, password, confirmPass, tanggalLahir, imageUrl} = request.body
     const userId = request.params.userId
 
     if (!name || !email) {
@@ -98,7 +98,7 @@ async function updateProfile(request) {
                         password: newHashPass,
                         imageUrl: imageUrl,
                         address: address,
-                        birthDate: birthDate},
+                        tanggalLahir: tanggalLahir},
                         { where: { id: userId}}
                     );
                     
@@ -126,7 +126,7 @@ async function updateProfile(request) {
                 email: email,
                 imageUrl: imageUrl,
                 address: address,
-                birthDate: birthDate},
+                tanggalLahir: tanggalLahir},
                 { where: { id: userId }}
             );
             
