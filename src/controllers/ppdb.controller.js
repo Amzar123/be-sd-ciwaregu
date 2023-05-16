@@ -50,9 +50,19 @@ const getByStatus = async(req, res, next) => {
   }
 }
 
+const getById = async(req, res, next) => {
+  try {
+    return res.json(await ppdb.getPpdbDetails(req))
+  } catch (error) {
+    console.error(`Error while getting ppdb`, err.message);
+    next(err);
+  }
+}
+
 export default{
     create,
     get,
     update,
-    getByStatus
+    getByStatus,
+    getById
 }

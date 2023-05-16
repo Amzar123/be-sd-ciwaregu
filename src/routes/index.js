@@ -15,7 +15,7 @@ const router =  express.Router();
 /*  */
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
-router.delete('/v1/logout', usersController.logout)
+/* router.delete('/v1/logout', usersController.logout) */
 
 /* galleries */
 router.post('/v1/galleries', adminVerifyToken ,galleriesController.create);
@@ -45,7 +45,8 @@ router.get('/v1/stats', statsController.get)
 router.post('/v1/ppdb', ppdbController.create)
 // kade verify token admin
 router.get('/v1/ppdb', ppdbController.get)
-router.put('/v1/ppdb/:candidateId', ppdbController.update)
+router.get('/v1/ppdb/:candidateId', ppdbController.getById)
+router.put('/v1/verifiedPpdb/:candidateId', ppdbController.update)
 router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 
 /* Profile */
