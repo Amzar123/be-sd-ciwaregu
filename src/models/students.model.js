@@ -16,9 +16,13 @@ export const Students = db.define('students', {
     type: DataTypes.STRING,
   },
   jenisKel: {
-    type: DataTypes.STRING,
+    type: DataTypes.ENUM,
+    values: ['laki-laki', 'perempuan'] 
   },
   agama: {
+    type: DataTypes.STRING,
+  },
+  noTelp: {
     type: DataTypes.STRING,
   },
   tglMasuk: {
@@ -30,25 +34,16 @@ export const Students = db.define('students', {
   pekerjaanAyah: {
     type: DataTypes.STRING,
   },
-  noTelpAyah: {
-    type: DataTypes.STRING,
-  },
   namaIbu: {
     type: DataTypes.STRING,
   },
   pekerjaanIbu: {
     type: DataTypes.STRING,
   },
-  noTelpIbu: {
-    type: DataTypes.STRING,
-  },
   namaWali: {
     type: DataTypes.STRING,
   },
   pekerjaanWali: {
-    type: DataTypes.STRING,
-  },
-  noTelpWali: {
     type: DataTypes.STRING,
   },
   createdAt: {

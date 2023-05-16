@@ -1,4 +1,5 @@
 import { Op } from 'sequelize';
+import bcrypt from "bcrypt";
 // import { query } from "../configs/db.config.js";
 import { v4 as uuidv4 } from 'uuid';
 import { v5 as uuidv5 } from 'uuid';
@@ -7,6 +8,8 @@ import { Family } from "../models/family.model.js";
 import { Document } from "../models/document.model.js";
 import { Guardian } from "../models/guardian.model.js";
 import ResponseClass from "../models/response.model.js";
+import { Users } from '../models/users.model.js';
+import { Students } from '../models/students.model.js';
 
 async function registerPPDB(request){
     // Get request Body
@@ -118,14 +121,14 @@ async function registerPPDB(request){
 
         if (berkas !== null) {
           const {
-            pasPotoUrl,
+            pasFotoUrl,
             aktaUrl,
             kkUrl
           } = berkas
           // Create new gallery record using the Galleries model
           newBerkas = await Document.create({
             id: uuidv4(),
-            pasPotoUrl,
+            pasFotoUrl,
             aktaUrl,
             kkUrl,
             createdAt: new Date(),
@@ -191,13 +194,82 @@ async function updateVerifyPPDB(request){
     try {
       // Find the existing gallery by its id using the Teachers model
       const existingCandidate = await Candidate.findByPk(candidateId);
+      const existingFamily = await Family.findOne({
+        where: { candidateId: candidateId },
+        attributes: ['namaAyah', 'pekerjaanAyah', 'namaIbu', 'pekerjaanIbu']
+      });
+      const existingGuardian = await Guardian.findOne({
+        where: { candidateId: candidateId },
+        attributes: ['nama', 'pekerjaan']
+      });
+      const existingDocument = await Document.findOne({
+        where: { candidateId: candidateId },
+        attributes: ['pasFotoUrl']
+      });
+
+      // set email default 
+      const userId = uuidv4()
+      const userShortUuid = uuidv5('mystring', userId).slice(0, 5);
+      const defaultEmail = 'ssdc' + userShortUuid + '@sdciwaregu.com'
+      
+      // hash default password
+      const salt = await bcrypt.genSalt();
+      const defaultPass = await bcrypt.hash("Muridsdciwaregu123", salt);
+
+      await Users.create({
+        id: userId,
+        name: existingCandidate.namaLengkap,
+        email: defaultEmail,
+        password: defaultPass,
+        imageUrl: existingDocument.pasFotoUrl,
+        address: existingCandidate.alamat,
+        tanggalLahir: existingCandidate.tanggalLahir,
+        role: "Students",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+
+      const studentId = uuidv4()
+      const shortUuid = uuidv5('mystring', studentId).slice(0, 5);
+      const nis = 'nis-' + shortUuid
+      await Students.create({
+        id: studentId,
+        nis: nis,
+        tmptLahir: existingCandidate.tempatLahir,
+        jenisKel: existingCandidate.jenisKelamin,
+        agama: existingCandidate.agama,
+        noTelp: existingCandidate.noTelp,
+        tglMasuk: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: userId,
+      })
+
+      if(existingGuardian != null){
+        await Students.update(
+          { namaWali: existingGuardian.nama, pekerjaanWali: existingGuardian.pekerjaan, updatedAt: new Date()},
+          {where: {id: studentId}}
+        )
+      }else if(existingFamily != null){
+        await Students.update(
+          { 
+            namaAyah: existingFamily.namaAyah, 
+            pekerjaanAyah: existingFamily.pekerjaanAyah,
+            namaIbu: existingFamily.namaIbu, 
+            pekerjaanIbu: existingFamily.pekerjaanIbu,
+            updatedAt: new Date()
+          },
+          {where: {id: studentId}}
+        )
+      }
 
       // Update the existing gallery record
       const updateCandidate = await existingCandidate.update({
         status: 'verified',
+        studentId: studentId,
         updatedAt: new Date()
       });
-
+      
       // Return the updated gallery in the response
       return {
         status: "success",
@@ -229,7 +301,7 @@ async function getHasilPpdb(query) {
     }
     if (createdAt) {
       whereClause.createdAt = {
-        [Op.between]: [createdAt, new Date("2023-05-16")]
+        [Op.between]: [createdAt, new Date()]
       }
     }
 

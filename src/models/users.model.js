@@ -27,8 +27,8 @@ export const Users = db.define('users', {
     address:{
         type: DataTypes.STRING
     },
-    birthDate:{
-        type: DataTypes.TEXT
+    tanggalLahir:{
+        type: DataTypes.DATE
     },
     refresh_token:{
         type: DataTypes.TEXT

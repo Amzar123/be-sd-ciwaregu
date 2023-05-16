@@ -9,7 +9,7 @@ export const Document = db.define('documents', {
       primaryKey: true,
       type: DataTypes.STRING
     },
-    pasPotoUrl: {
+    pasFotoUrl: {
       type: DataTypes.STRING
     },
     aktaUrl: {
