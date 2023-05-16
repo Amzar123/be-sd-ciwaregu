@@ -28,7 +28,7 @@ router.delete('/v1/galleries/:galleryId', adminVerifyToken, galleriesController.
 /* GET teachers */
 router.get('/v1/teachers', teachersController.get);
 router.post('/v1/teachers', adminVerifyToken, teachersController.create);
-router.put('/v1/teachers/:teacherId', teachersController.update);
+router.put('/v1/teachers/:teacherId', adminVerifyToken, teachersController.update);
 router.get('/v1/teachers/:teacherId', teachersController.getById);
 router.delete('/v1/teachers/:teacherId', adminVerifyToken, teachersController.deleteById);
 
@@ -44,17 +44,16 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post('/v1/ppdb', ppdbController.create)
-// kade verify token admin
-router.get('/v1/ppdb', ppdbController.get)
+router.get('/v1/ppdb', adminVerifyToken, ppdbController.get)
 router.get('/v1/ppdb/:candidateId', ppdbController.getById)
-router.put('/v1/verifiedPpdb/:candidateId', ppdbController.update)
+router.put('/v1/verifiedPpdb/:candidateId', adminVerifyToken, ppdbController.update)
 router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 
 /* Students (Admin) */
-router.get('/v1/students', studentsController.get)
-router.get('/v1/students/:studentId', studentsController.getById)
-router.delete('/v1/students/:studentId', studentsController.deleteByid)
-router.put('/v1/students/:studentId', studentsController.update)
+router.get('/v1/students', adminVerifyToken, studentsController.get)
+router.get('/v1/students/:studentId', adminVerifyToken, studentsController.getById)
+router.delete('/v1/students/:studentId', adminVerifyToken, studentsController.deleteByid)
+router.put('/v1/students/:studentId', adminVerifyToken, studentsController.update)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)
