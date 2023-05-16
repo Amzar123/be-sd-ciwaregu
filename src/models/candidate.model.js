@@ -67,6 +67,10 @@ export const Candidate = db.define('candidates', {
     noTelp: {
         type: DataTypes.STRING
     },
+    asalMuasal: {
+        allowNull: false,
+        type: DataTypes.STRING
+    },
     sekolahAsal: {
         allowNull: true,
         type: DataTypes.STRING

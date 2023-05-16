@@ -1,5 +1,3 @@
-import { Op } from 'sequelize';
-// import { query } from "../configs/db.config.js";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from 'uuid';
 import { v5 as uuidv5 } from 'uuid';
@@ -41,10 +39,12 @@ async function getMultiple(){
   }
 }
 
-async function createTeacher(responseBody) {
+async function createTeacher(request) {
 
   // Get request Body
-  const { name, imageUrl, jenisPTK, email } = responseBody;
+  const { name, jenisPTK, email } = request.body;
+
+  const imageUrl = request.file.path
 
   // Error handling
   if (!name || !jenisPTK ) {

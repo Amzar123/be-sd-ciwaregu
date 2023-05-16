@@ -36,10 +36,20 @@ async function registerPPDB(request){
             provinsi, 
             kodePos,
             noTelp,
+            asalMuasal,
             sekolahAsal,
-            keluarga,
-            berkas,
-            wali
+            namaAyah,
+            pendidikanAyah,
+            pekerjaanAyah,
+            penghasilanAyah,
+            namaIbu,
+            pendidikanIbu,
+            pekerjaanIbu,
+            penghasilanIbu,
+            namaWali,
+            pendidikanWali,
+            pekerjaanWali,
+            penghasilanWali,
         } = request.body
 
         const candidateId = uuidv4()
@@ -67,23 +77,14 @@ async function registerPPDB(request){
           provinsi, 
           kodePos,
           noTelp,
+          asalMuasal,
           sekolahAsal,
           createdAt: new Date(),
           updatedAt: new Date(),
           status: 'waiting'
         });
 
-        if (keluarga !== null) {
-          const {
-            namaAyah,
-            pendidikanAyah,
-            pekerjaanAyah,
-            penghasilanAyah,
-            namaIbu,
-            pendidikanIbu,
-            pekerjaanIbu,
-            penghasilanIbu
-          } = keluarga
+        if (namaAyah !== null && namaIbu !== null) {
           // Create new gallery record using the Galleries model
           newKeluarga = await Family.create({
             id: uuidv4(),
@@ -99,32 +100,24 @@ async function registerPPDB(request){
             updatedAt: new Date(),
             candidateId: candidateId
           });
-        } else if (wali !== null) {
-          const {
-            nama,
-            pendidikan,
-            pekerjaan,
-            penghasilan,
-          } = wali
+        } else if (namaWali !== null) {
           // Create new gallery record using the Galleries model
           newWali = await Guardian.create({
             id: uuidv4(),
-            nama,
-            pendidikan,
-            pekerjaan,
-            penghasilan,
+            nama: namaWali,
+            pendidikan: pendidikanWali,
+            pekerjaan: pekerjaanWali,
+            penghasilan: penghasilanWali,
             createdAt: new Date(),
             updatedAt: new Date(),
             candidateId: candidateId
           });
         }
 
-        if (berkas !== null) {
-          const {
-            pasFotoUrl,
-            aktaUrl,
-            kkUrl
-          } = berkas
+          const pasFotoUrl = request.files[0].path
+          const aktaUrl = request.files[1].path
+          const kkUrl = request.files[2].path
+
           // Create new gallery record using the Galleries model
           newBerkas = await Document.create({
             id: uuidv4(),
@@ -135,7 +128,6 @@ async function registerPPDB(request){
             updatedAt: new Date(),
             candidateId: candidateId
           });
-        }
 
         const result = {
           ...newCandidate["dataValues"],
@@ -154,9 +146,9 @@ async function registerPPDB(request){
       
     } catch (err) {
       return {
-        status: "Failed", 
-        code : 400,
-        message : 'Error creating ppdb!'
+        status: "failed",
+        code: 500,
+        message: 'Error creating PPDB!'
       }
     }
 }
@@ -363,6 +355,7 @@ async function getPpdbDetails(request) {
     return  responseError
   }
 }
+
 export default {
   registerPPDB,
   getPPDB,

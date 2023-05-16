@@ -13,13 +13,15 @@ import studentsController from "../controllers/students.controller.js";
 
 const router =  express.Router();
 
+import cloudinaryConfig from "../configs/cloudinary.config.js";
+
 /*  */
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
 /* router.delete('/v1/logout', usersController.logout) */
 
 /* galleries */
-router.post('/v1/galleries', adminVerifyToken ,galleriesController.create);
+router.post('/v1/galleries', adminVerifyToken, cloudinaryConfig.uploadGalleries.single('imageUrl'), galleriesController.create);
 router.get('/v1/galleries', galleriesController.get);
 router.put('/v1/galleries/:galleryId', adminVerifyToken ,galleriesController.update);
 router.get('/v1/galleries/:galleryId', galleriesController.getById);
@@ -27,7 +29,7 @@ router.delete('/v1/galleries/:galleryId', adminVerifyToken, galleriesController.
 
 /* GET teachers */
 router.get('/v1/teachers', teachersController.get);
-router.post('/v1/teachers', adminVerifyToken, teachersController.create);
+router.post('/v1/teachers', adminVerifyToken, cloudinaryConfig.uploadUsers.single('imageUrl'), teachersController.create);
 router.put('/v1/teachers/:teacherId', adminVerifyToken, teachersController.update);
 router.get('/v1/teachers/:teacherId', teachersController.getById);
 router.delete('/v1/teachers/:teacherId', adminVerifyToken, teachersController.deleteById);
@@ -43,7 +45,12 @@ router.get('/v1/programs/:programId', programsController.getById)
 router.get('/v1/stats', statsController.get)
 
 /* PPDB */
-router.post('/v1/ppdb', ppdbController.create)
+router.post(
+    '/v1/ppdb', 
+    cloudinaryConfig.uploadPPDB.any([{name:'pasFotoUrl'}, {name:'aktaUrl'}, {name:'kkUrl'}]), 
+    ppdbController.create
+)
+
 router.get('/v1/ppdb', adminVerifyToken, ppdbController.get)
 router.get('/v1/ppdb/:candidateId', ppdbController.getById)
 router.put('/v1/verifiedPpdb/:candidateId', adminVerifyToken, ppdbController.update)

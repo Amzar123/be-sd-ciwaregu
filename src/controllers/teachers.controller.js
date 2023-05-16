@@ -14,7 +14,7 @@ const get = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     // Create data to DB
-    const data = await teachers.createTeacher(req.body);
+    const data = await teachers.createTeacher(req);
     // if Return "Created / 201"
     if (data.code === 201)
     {

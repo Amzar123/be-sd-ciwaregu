@@ -48,7 +48,9 @@ async function getMultiple(query){
 async function createGalleries(request){
 
   // Get request Body
-  const { title, imageUrl, description } = request.body
+  const { title, description } = request.body
+
+  const imageUrl = request.file.path
   
   // Error message
   if (!title || !imageUrl || !description) {
