@@ -9,6 +9,7 @@ import teachersController from "../controllers/teachers.controller.js";
 import statsController from "../controllers/stats.controller.js";
 import ppdbController from "../controllers/ppdb.controller.js";
 import profileController from "../controllers/profile.controller.js";
+import studentsController from "../controllers/students.controller.js";
 
 const router =  express.Router();
 
@@ -48,6 +49,9 @@ router.get('/v1/ppdb', ppdbController.get)
 router.get('/v1/ppdb/:candidateId', ppdbController.getById)
 router.put('/v1/verifiedPpdb/:candidateId', ppdbController.update)
 router.get('/v1/hasilPpdb', ppdbController.getByStatus)
+
+/* Students (Admin) */
+router.get('/v1/students', studentsController.get)
 
 /* Profile */
 router.get('/v1/profile/:userId', verifyToken, profileController.getById)

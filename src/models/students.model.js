@@ -61,4 +61,8 @@ export const Students = db.define('students', {
 });
 
 // Define association between Teachers and Users
-Students.belongsTo(Users, { foreignKey: 'userId' });
+Students.belongsTo(Users, { 
+  foreignKey: 'userId',
+  as: 'studentsDetail',
+  onDelete: 'CASCADE'
+});
