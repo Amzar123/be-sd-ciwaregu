@@ -9,6 +9,16 @@ const get = async (req, res, next) => {
     }
 }
 
+const getById = async(req, res, next) => {
+    try {
+        res.json(await studentsService.getDetailsStudents(req));
+    } catch (err) {
+        console.error(`Error while getting students`, err.message);
+        next(err);
+    }
+}
+
 export default {
     get,
+    getById,
 }
