@@ -6,36 +6,12 @@ import { v5 as uuidv5 } from 'uuid';
 import { Teachers } from "../models/teachers.model.js";
 import { Users } from '../models/users.model.js';
 
-async function getMultiple(query){
+async function getMultiple(){
   
-  const { name, imageUrl, jenisPTK, email, nuptk } = query;
 
   try {
 
-    const whereClause = {};
-
-    if (name) {
-      whereClause.name = {
-        [Op.iLike]: `%${name}%`, // use case-insensitive LIKE operator
-      };
-    }
-    if (imageUrl) {
-      whereClause.imageUrl = imageUrl;
-    }
-    if (jenisPTK) {
-      whereClause.jenisPTK = {
-        [Op.iLike]: `%${jenisPTK}%`, // use case-insensitive LIKE operator
-      };
-    }
-    if (nuptk) {
-      whereClause.nuptk = nuptk;
-    }
-    if (email) {
-      whereClause.email = email;
-    }
-
     const dbResult = await Teachers.findAll({ 
-      where: whereClause, 
       include: [
         { 
           model: Users, 
