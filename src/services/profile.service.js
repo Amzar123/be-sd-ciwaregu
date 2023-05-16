@@ -13,7 +13,7 @@ async function getProfileUser(request) {
         //find by id in DB
         const userResult = await Users.findOne({ 
             where: {id: userId},
-            attributes: ['id', 'name', 'email', 'address', 'birthDate', 'imageUrl']
+            attributes: ['id', 'name', 'email', 'address', 'tanggalLahir', 'imageUrl']
         })
 
         if (!userResult) {
