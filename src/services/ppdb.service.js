@@ -321,10 +321,53 @@ async function getHasilPpdb(query) {
   }
 }
 
+async function getPpdbDetails(request) {
+  
+  const ppdbId = request.params.candidateId
+  var responseSuccess = new ResponseClass.SuccessResponse
+  var responseError = new ResponseClass.ErrorResponse
+
+  let familyResult = null
+  let guardianResult = null
+  
+  try {
+    const candidateResult = await Candidate.findOne({
+      where: {id: ppdbId}
+    })
+    const documentResult = await Document.findOne({
+      where: {candidateId: ppdbId}
+    })
+
+    familyResult = await Family.findOne({
+      where: {candidateId: ppdbId}
+    })
+    guardianResult = await Guardian.findOne({
+      where: {candidateId: ppdbId}
+    })
+
+    
+    const ppdbDetailsResult = {
+      ...candidateResult['dataValues'],
+      keluarga: familyResult,
+      wali: guardianResult,
+      berkas: documentResult
+    }
+    
+    responseSuccess.message = `Get details ppdb ${ppdbDetailsResult.noPendaftaran} successfull!`
+    responseSuccess.data = ppdbDetailsResult
+    return  responseSuccess
+
+  } catch (error) {
+    console.log(error)
+    responseError.message = "Internl Server Error"
+    return  responseError
+  }
+}
 export default {
   registerPPDB,
   getPPDB,
   updateVerifyPPDB,
-  getHasilPpdb
+  getHasilPpdb,
+  getPpdbDetails
 }
   
