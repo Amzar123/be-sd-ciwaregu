@@ -50,20 +50,20 @@ async function createGalleries(request){
   // Get request Body
   const { title, description } = request.body
 
-  const imageUrl = request.file.path
+  // const imageUrl = request.file.path
   
   // Error message
-  if (!title || !imageUrl || !description) {
+  if (!title || !description) {
     let message = ""
     
       if (!title ) {
         message += ", title"
       }
       
-      if (!imageUrl) {
+      // if (!imageUrl) {
 
-        message += ", imageUrl"
-      }
+      //   message += ", imageUrl"
+      // }
 
       if (!description) {
         message += ", description"
@@ -77,12 +77,22 @@ async function createGalleries(request){
     }
     
     try {
+      
+      let imageUrl = null
 
+      if (request.file) {
+        imageUrl = request.file.path
+      }
+
+    // set default imageUrl if empty
+    const defaultImageUrl = 'https://res.cloudinary.com/dp7yp5kgv/image/upload/v1684334844/galleries/map_uqx7qx.jpg';
+    const finalImageUrl = imageUrl || defaultImageUrl;
+      
       // Create new gallery record using the Galleries model
       const newGallery = await Galleries.create({
         id: uuidv4(),
         title: title,
-        imageUrl: imageUrl,
+        imageUrl: finalImageUrl,
         description: description,
         createdAt: new Date(),
         updatedAt: new Date()

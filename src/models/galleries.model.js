@@ -14,7 +14,7 @@ export const Galleries = db.define('galleries', {
   },
   imageUrl: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   description: {
     type: DataTypes.STRING,

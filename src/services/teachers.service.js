@@ -44,8 +44,6 @@ async function createTeacher(request) {
   // Get request Body
   const { name, jenisPTK, email } = request.body;
 
-  const imageUrl = request.file.path
-
   // Error handling
   if (!name || !jenisPTK ) {
     const missingFields = [];
@@ -68,6 +66,12 @@ async function createTeacher(request) {
   try {
     
     const userId = uuidv4();
+
+    let imageUrl = null
+
+    if (request.file) {
+      imageUrl = request.file.path
+    }
 
     // set default imageUrl if empty
     const defaultImageUrl = 'https://i.stack.imgur.com/34AD2.jpg';
