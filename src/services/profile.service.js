@@ -37,7 +37,7 @@ async function updateProfile(request) {
     var responseError = new ResponseClass.ErrorResponse()
     var responseSuccess = new ResponseClass.SuccessWithNoDataResponse()
 
-    const {name, email, address, password, confirmPass, tanggalLahir, imageUrl} = request.body
+    const {name, email, address, password, confirmPass, tanggalLahir} = request.body
     const userId = request.params.userId
 
     if (!name || !email) {
@@ -90,17 +90,22 @@ async function updateProfile(request) {
                 }
 
                 try {
+                    // Find the existing gallery by its id using the Galleries model
+                    const existingGallery = await Galleries.findByPk(galleryId);
 
                     //update user to database
-                    await Users.update(
+                    const updatedUser = await existingGallery.update(
                         {name: name,
                         email: email,
                         password: newHashPass,
-                        imageUrl: imageUrl,
                         address: address,
                         tanggalLahir: tanggalLahir},
                         { where: { id: userId}}
                     );
+
+                    if (request.file) {
+                        updatedUser.imageUrl = request.file.path
+                    }
                     
                     //return response success
                     responseSuccess.message = `Update data with id: ${userId} Sucess`

@@ -119,8 +119,7 @@ async function updateStudentsById(request) {
     const {
         nis, 
         name, 
-        email, 
-        imageUrl, 
+        email,  
         address, 
         tanggalLahir, 
         tmptLahir, 
@@ -197,9 +196,12 @@ async function updateStudentsById(request) {
           email: email,
           tanggalLahir: tanggalLahir,
           address: address,
-          imageUrl: imageUrl,
           updatedAt: new Date()
         });
+
+        if (request.file) {
+            existingUserStudent.imageUrl = request.file.path
+        }
 
         responseSuccess.message = `Updated Student with ${nis} successfull!`
         return responseSuccess

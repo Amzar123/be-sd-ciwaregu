@@ -132,7 +132,7 @@ async function updateTeacherById(request){
   const { teacherId } = request.params
 
   // Get request Body
-  const { name, imageUrl, jenisPTK, email } = request.body;
+  const { name, jenisPTK, email } = request.body;
 
   // Error handling
   if (!name || !jenisPTK || !email) {
@@ -159,8 +159,8 @@ async function updateTeacherById(request){
     
     try {
       // set default imageUrl if empty
-      const defaultImageUrl = 'https://i.stack.imgur.com/34AD2.jpg';
-      const finalImageUrl = imageUrl || defaultImageUrl;
+      // const defaultImageUrl = 'https://i.stack.imgur.com/34AD2.jpg';
+      // const finalImageUrl = imageUrl || defaultImageUrl;
 
       // Find the existing gallery by its id using the Teachers model
       const existingTeacher = await Teachers.findByPk(teacherId);
@@ -176,9 +176,12 @@ async function updateTeacherById(request){
       const updatedUserTeacher = await existingUserTeacher.update({
         name: name,
         email: email,
-        imageUrl: finalImageUrl,
         updatedAt: new Date()
       });
+
+      if (request.file) {
+        updatedUserTeacher.imageUrl = request.file.path
+      }
 
       // Return the updated gallery in the response
       return {

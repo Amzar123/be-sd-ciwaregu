@@ -115,21 +115,22 @@ async function updateGalleriesById(request){
 
   const { galleryId } = request.params
 
+
   // Get request Body
-  const { title, imageUrl, description } = request.body
+  const { title, description } = request.body
   
   // Error message
-  if (!title || !imageUrl || !description) {
+  if (!title  || !description) {
     let message = ""
     
       if (!title ) {
         message += ", title"
       }
       
-      if (!imageUrl) {
+      /* if (!imageUrl) {
 
         message += ", imageUrl"
-      }
+      } */
 
       if (!description) {
         message += ", description"
@@ -150,10 +151,13 @@ async function updateGalleriesById(request){
       // Update the existing gallery record
       const updatedGallery = await existingGallery.update({
         title: title,
-        imageUrl: imageUrl,
         description: description,
         updatedAt: new Date()
       });
+
+      if (request.file) {
+        updatedGallery.imageUrl = request.file.path
+      }
 
       // Return the updated gallery in the response
       return {
