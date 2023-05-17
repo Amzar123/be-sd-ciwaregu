@@ -23,7 +23,7 @@ export const Guardian = db.define('guardians', {
     },
     penghasilan: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     createdAt: {
       allowNull: false,

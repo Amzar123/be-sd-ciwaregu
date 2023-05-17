@@ -22,8 +22,7 @@ export const Candidate = db.define('candidates', {
         type: DataTypes.STRING
     },
     jenisKelamin: {
-        type: DataTypes.ENUM,
-        values: ['laki-laki', 'perempuan'] 
+        type: DataTypes.STRING
     },
     tempatLahir: {
         type: DataTypes.STRING

@@ -23,7 +23,7 @@ export const Family = db.define('families', {
     },
     penghasilanAyah: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
     namaIbu: {
       allowNull: false,
@@ -38,7 +38,7 @@ export const Family = db.define('families', {
     },
     penghasilanIbu: {
       allowNull: false,
-      type: DataTypes.INTEGER
+      type: DataTypes.STRING
     },
     createdAt: {
       allowNull: false,

@@ -16,8 +16,7 @@ export const Students = db.define('students', {
     type: DataTypes.STRING,
   },
   jenisKel: {
-    type: DataTypes.ENUM,
-    values: ['laki-laki', 'perempuan'] 
+    type: DataTypes.STRING
   },
   agama: {
     type: DataTypes.STRING,
