@@ -52,7 +52,7 @@ router.post(
 )
 
 router.get('/v1/ppdb', adminVerifyToken, ppdbController.get)
-router.get('/v1/ppdb/:candidateId', ppdbController.getById)
+router.get('/v1/ppdb/:candidateId', adminVerifyToken, ppdbController.getById)
 router.put('/v1/verifiedPpdb/:candidateId', adminVerifyToken, ppdbController.update)
 router.get('/v1/hasilPpdb', ppdbController.getByStatus)
 
