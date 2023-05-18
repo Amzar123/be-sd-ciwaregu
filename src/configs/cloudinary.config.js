@@ -38,9 +38,29 @@ const uploadGalleries = multer({ storage: storageGalleries });
 const uploadUsers = multer({ storage: storageUsers });
 const uploadPPDB = multer({ storage: storagePPDB });
 
+const deleteFile = async (filename) => {
+  try {
+
+    const result = await cloudinary.uploader.destroy(filename);
+    console.log(result);
+    // Check the result object for the status of the deletion
+    if (result.result === 'ok') {
+      console.log('File deleted successfully.');
+      return true
+    } else {
+      console.log('Failed to delete file.');
+      return false
+    }
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    return error
+  }
+};
+
 export default 
 {
   uploadGalleries,
   uploadUsers,
-  uploadPPDB
+  uploadPPDB,
+  deleteFile
 }

@@ -16,6 +16,10 @@ export const Galleries = db.define('galleries', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  filename: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   description: {
     type: DataTypes.STRING,
     allowNull: false,

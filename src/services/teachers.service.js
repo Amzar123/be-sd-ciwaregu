@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { v5 as uuidv5 } from 'uuid';
 import { Teachers } from "../models/teachers.model.js";
 import { Users } from '../models/users.model.js';
+import cloudinaryConfig from '../configs/cloudinary.config.js';
 
 async function getMultiple(){
   
@@ -68,9 +69,12 @@ async function createTeacher(request) {
     const userId = uuidv4();
 
     let imageUrl = null
+    let filename = null
 
     if (request.file) {
       imageUrl = request.file.path
+      filename = request.file.filename
+      // console.log(request.file)
     }
 
     // set default imageUrl if empty
@@ -93,6 +97,7 @@ async function createTeacher(request) {
       email: finalEmail,
       password: hashPass,
       imageUrl: finalImageUrl,
+      filename: filename,
       role: "Teachers",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -184,8 +189,12 @@ async function updateTeacherById(request){
       });
 
       if (request.file) {
-        updatedUserTeacher.imageUrl = request.file.path
-        updatedTeacher.save()
+        if (updatedUserTeacher.filename !== request.file.filename)
+        {
+          updatedUserTeacher.filename = request.file.filename
+          updatedUserTeacher.imageUrl = request.file.path
+          updatedUserTeacher.save()
+        }
       }
 
       // Return the updated gallery in the response
@@ -216,9 +225,7 @@ async function getById(request){
   
   const { teacherId } = request.params
 
-
   try {
-
 
     const dbResult = await Teachers.findOne({ 
       where: { id: teacherId }, 
@@ -269,15 +276,40 @@ async function deleteById(request){
       }
     }
 
-    // Delete the gallery by ID using the Galleries model
-    await dbResult.destroy();
-    await userResult.destroy();
+    if (userResult.imageUrl) {
+      // Extract the public_id from the Cloudinary URL
 
-    // Return success message in the response
-    return {
-      status: "success", 
-      code : 200,
-      message : 'Teacher deleted successfully!'
+      // Delete the file using the public_id
+      const cloudinaryResult = await cloudinaryConfig.deleteFile(userResult.filename);
+
+      // Check if the file deletion was successful in Cloudinary
+      if (cloudinaryResult == true) {
+
+        // Delete the gallery by ID using the Galleries model
+        await dbResult.destroy();
+        await userResult.destroy();
+        
+        // Return success message in the response
+        return {
+          status: "success",
+          code: 200,
+          message: 'Teacher deleted successfully!'
+        };
+      } else {
+        // Return error message if file deletion failed in Cloudinary
+        return {
+          status: "Failed",
+          code: 400,
+          message: 'Error deleting teacher file in Cloudinary!'
+        };
+      }
+    } else {
+      // Return error message if there was no file in Cloudinary
+      return {
+        status: "Failed",
+        code: 400,
+        message: 'Error deleting teacher or file not found in Cloudinary!'
+      };
     }
     
   } catch (err) {

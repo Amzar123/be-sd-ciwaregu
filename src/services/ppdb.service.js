@@ -122,6 +122,7 @@ async function registerPPDB(request){
           newBerkas = await Document.create({
             id: uuidv4(),
             pasFotoUrl,
+            pasFotoFilename: request.files[0].filename,
             aktaUrl,
             kkUrl,
             createdAt: new Date(),
@@ -196,7 +197,7 @@ async function updateVerifyPPDB(request){
       });
       const existingDocument = await Document.findOne({
         where: { candidateId: candidateId },
-        attributes: ['pasFotoUrl']
+        attributes: ['pasFotoUrl', 'pasFotoFilename']
       });
 
       // set email default 
@@ -214,6 +215,7 @@ async function updateVerifyPPDB(request){
         email: defaultEmail,
         password: defaultPass,
         imageUrl: existingDocument.pasFotoUrl,
+        filename: existingDocument.pasFotoFilename,
         address: existingCandidate.alamat,
         tanggalLahir: existingCandidate.tanggalLahir,
         role: "Students",

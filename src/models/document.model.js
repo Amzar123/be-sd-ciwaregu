@@ -12,6 +12,9 @@ export const Document = db.define('documents', {
     pasFotoUrl: {
       type: DataTypes.STRING
     },
+    pasFotoFilename: {
+      type: DataTypes.STRING
+    },
     aktaUrl: {
       type: DataTypes.STRING
     },

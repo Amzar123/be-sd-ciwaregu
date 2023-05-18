@@ -2,6 +2,7 @@ import ResponseClass from "../models/response.model.js"
 import { Op } from 'sequelize';
 import { Students } from "../models/students.model.js";
 import { Users } from "../models/users.model.js";
+import cloudinaryConfig from '../configs/cloudinary.config.js';
 
 async function getMultipleStudents(query) {
     
@@ -93,14 +94,34 @@ async function deleteStudentsById(request){
         }
 
         const deletedNis = dbResult.nis
-    
-        // Delete the gallery by ID using the Galleries model
-        await dbResult.destroy();
-        await userResult.destroy();
-    
-        // Return success message in the response
-        responseSuccess.message = `Delete Student with ${deletedNis} successfull!`
-        return responseSuccess
+
+        if (userResult.imageUrl) {
+
+            // Delete the file using the public_id
+            const cloudinaryResult = await cloudinaryConfig.deleteFile(userResult.filename);
+
+            // Check if the file deletion was successful in Cloudinary
+            if (cloudinaryResult == true) {
+
+                // Delete the gallery by ID using the Galleries model
+                await dbResult.destroy();
+                await userResult.destroy();
+                
+                // Return success message in the response
+                return {
+                status: "success",
+                code: 200,
+                message: `Delete Student with ${deletedNis} deleted successfully!`
+                };
+            } else {
+                // Return error message if file deletion failed in Cloudinary
+                return {
+                status: "Failed",
+                code: 400,
+                message: 'Error deleting Student file in Cloudinary!'
+                };
+            }
+        }
       
     } catch (err) {
         console.error(err);
@@ -200,8 +221,12 @@ async function updateStudentsById(request) {
         });
 
         if (request.file) {
-            existingUserStudent.imageUrl = request.file.path
-            existingUserStudent.save()
+            if (existingUserStudent.filename !== request.file.filename)
+            {
+                existingUserStudent.filename = request.file.filename
+                existingUserStudent.imageUrl = request.file.path
+                existingUserStudent.save()
+            }
         }
 
         responseSuccess.message = `Updated Student with ${nis} successfull!`
