@@ -201,6 +201,7 @@ async function updateStudentsById(request) {
 
         if (request.file) {
             existingUserStudent.imageUrl = request.file.path
+            existingUserStudent.save()
         }
 
         responseSuccess.message = `Updated Student with ${nis} successfull!`

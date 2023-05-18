@@ -185,6 +185,7 @@ async function updateTeacherById(request){
 
       if (request.file) {
         updatedUserTeacher.imageUrl = request.file.path
+        updatedTeacher.save()
       }
 
       // Return the updated gallery in the response

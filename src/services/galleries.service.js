@@ -167,6 +167,7 @@ async function updateGalleriesById(request){
 
       if (request.file) {
         updatedGallery.imageUrl = request.file.path
+        updatedGallery.save()
       }
 
       // Return the updated gallery in the response

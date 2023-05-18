@@ -105,6 +105,7 @@ async function updateProfile(request) {
 
                     if (request.file) {
                         updatedUser.imageUrl = request.file.path
+                        updatedUser.save()
                     }
                     
                     //return response success
