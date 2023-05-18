@@ -14,6 +14,35 @@ async function getPpdb(){
     }
 }
 
+async function getAllUser(){
+    var responseError = new ResponseClass.ErrorResponse()
+    var responseSuccess = new ResponseClass.SuccessResponse()
+
+    try {
+        //find by id in DB
+        const userResult = await Users.findAll({ 
+            where: {role: "Users"},
+            attributes: ['id', 'name', 'email', 'address', 'tanggalLahir', 'imageUrl']
+        })
+
+        if (!userResult) {
+            responseError.message = "User Not Found!"
+            return responseError
+        }
+        
+        responseSuccess.message = `get User success!`
+        responseSuccess.data = userResult
+        return responseSuccess
+
+    } catch (error) {
+        console.error(error)
+        responseError.code = 500
+        responseError.message = error
+        return responseError
+    }
+}
+
+
 //registerUser function
 async function registerUsers(requestBody){
     var responseError = new ResponseClass.ErrorResponse()
@@ -228,9 +257,8 @@ function generateToken(userRegistered) {
     return token
 }
 
-
-
 export default {
+    getAllUser,
     getPpdb,
     registerUsers,
     loginUsers,

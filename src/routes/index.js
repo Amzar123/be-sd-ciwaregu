@@ -18,6 +18,7 @@ import cloudinaryConfig from "../configs/cloudinary.config.js";
 /*  */
 router.post('/v1/register', usersController.register);
 router.post('/v1/login', usersController.login);
+router.get('/v1/users', adminVerifyToken, usersController.getAllUser)
 /* router.delete('/v1/logout', usersController.logout) */
 
 /* galleries */

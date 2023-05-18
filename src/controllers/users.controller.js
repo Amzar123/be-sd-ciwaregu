@@ -1,6 +1,7 @@
 import UsersService from "../services/users.service.js";
 import ResponseClass from "../models/response.model.js";
 import { request } from "express";
+import usersService from "../services/users.service.js";
 
 //get all users function
 const get = async(req, res) => {
@@ -9,6 +10,14 @@ const get = async(req, res) => {
         res.json(users);
     } catch (error) {
         console.log(error);
+    }
+}
+
+const getAllUser = async(req, res) => {
+    try {
+        res.json(await usersService.getAllUser());
+    } catch (error) {
+        console.log(error)
     }
 }
 
@@ -73,6 +82,7 @@ const logout = async(req, res, next) => {
 
 export default {
     get,
+    getAllUser,
     login,
     register,
     logout
