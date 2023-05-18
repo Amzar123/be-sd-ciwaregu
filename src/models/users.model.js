@@ -24,6 +24,9 @@ export const Users = db.define('users', {
     imageUrl:{
         type: DataTypes.STRING
     },
+    filename:{
+        type: DataTypes.STRING
+    },
     address:{
         type: DataTypes.STRING
     },

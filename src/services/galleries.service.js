@@ -2,6 +2,7 @@ import { Op } from 'sequelize';
 // import { query } from "../configs/db.config.js";
 import { v4 as uuidv4 } from 'uuid';
 import { Galleries } from "../models/galleries.model.js";
+import cloudinaryConfig from '../configs/cloudinary.config.js';
 
 async function getMultiple(query){
   
@@ -79,20 +80,24 @@ async function createGalleries(request){
     try {
       
       let imageUrl = null
+      let filename = null
 
       if (request.file) {
         imageUrl = request.file.path
+        filename = request.file.filename
+        // console.log(request.file)
       }
 
-    // set default imageUrl if empty
-    const defaultImageUrl = 'https://res.cloudinary.com/dp7yp5kgv/image/upload/v1684334844/galleries/map_uqx7qx.jpg';
-    const finalImageUrl = imageUrl || defaultImageUrl;
+      // set default imageUrl if empty
+      const defaultImageUrl = 'https://res.cloudinary.com/dp7yp5kgv/image/upload/v1684334844/galleries/map_uqx7qx.jpg';
+      const finalImageUrl = imageUrl || defaultImageUrl;
       
       // Create new gallery record using the Galleries model
       const newGallery = await Galleries.create({
         id: uuidv4(),
         title: title,
         imageUrl: finalImageUrl,
+        filename: filename,
         description: description,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -166,8 +171,12 @@ async function updateGalleriesById(request){
       });
 
       if (request.file) {
-        updatedGallery.imageUrl = request.file.path
-        updatedGallery.save()
+        if (updatedGallery.filename !== request.file.filename)
+        {
+          updatedGallery.filename = request.file.filename
+          updatedGallery.imageUrl = request.file.path
+          updatedGallery.save()
+        }
       }
 
       // Return the updated gallery in the response
@@ -227,39 +236,62 @@ async function getById(request){
   }
 }
 
-async function deleteById(request){
-  
-  const { galleryId } = request.params
+async function deleteById(request) {
+  const { galleryId } = request.params;
 
   try {
-
     const dbResult = await Galleries.findOne({ where: { id: galleryId } });
 
     if (!dbResult) {
       return {
-        status: "Failed", 
-        code : 404,
-        message : 'Gallery not found!'
+        status: "Failed",
+        code: 404,
+        message: 'Gallery not found!'
+      };
+    }
+
+    if (dbResult.imageUrl) {
+      // Extract the public_id from the Cloudinary URL
+
+      // Delete the file using the public_id
+      const cloudinaryResult = await cloudinaryConfig.deleteFile(dbResult.filename);
+
+      // Check if the file deletion was successful in Cloudinary
+      if (cloudinaryResult == true) {
+
+        // Delete the gallery by ID using the Galleries model
+        await dbResult.destroy();
+        
+        // Return success message in the response
+        return {
+          status: "success",
+          code: 200,
+          message: 'Gallery deleted successfully!'
+        };
+      } else {
+        // Return error message if file deletion failed in Cloudinary
+        return {
+          status: "Failed",
+          code: 400,
+          message: 'Error deleting gallery file in Cloudinary!'
+        };
       }
+    } else {
+      // Return error message if there was no file in Cloudinary
+      return {
+        status: "Failed",
+        code: 400,
+        message: 'Error deleting gallery or file not found in Cloudinary!'
+      };
     }
 
-    // Delete the gallery by ID using the Galleries model
-    await dbResult.destroy();
-
-    // Return success message in the response
-    return {
-      status: "success", 
-      code : 200,
-      message : 'Gallery deleted successfully!'
-    }
-    
   } catch (err) {
     console.error(err);
     return {
-      status: "Failed", 
-      code : 400,
-      message : 'Error deleting gallery!'
-    }
+      status: "Failed",
+      code: 400,
+      message: 'Error deleting gallery!'
+    };
   }
 }
 

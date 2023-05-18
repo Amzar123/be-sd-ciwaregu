@@ -46,7 +46,7 @@ router.get('/v1/stats', statsController.get)
 
 /* PPDB */
 router.post(
-    '/v1/ppdb', 
+    '/v1/ppdb', verifyToken,
     cloudinaryConfig.uploadPPDB.any([{name:'pasFotoUrl'}, {name:'aktaUrl'}, {name:'kkUrl'}]), 
     ppdbController.create
 )

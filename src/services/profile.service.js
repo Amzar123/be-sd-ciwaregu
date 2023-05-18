@@ -95,17 +95,26 @@ async function updateProfile(request) {
 
                     //update user to database
                     const updatedUser = await existingGallery.update(
-                        {name: name,
-                        email: email,
-                        password: newHashPass,
-                        address: address,
-                        tanggalLahir: tanggalLahir},
-                        { where: { id: userId}}
+                        {
+                            name: name,
+                            email: email,
+                            password: newHashPass,
+                            address: address,
+                            tanggalLahir: tanggalLahir},
+                        { 
+                            where: { 
+                                id: userId
+                            }
+                        }
                     );
 
                     if (request.file) {
-                        updatedUser.imageUrl = request.file.path
-                        updatedUser.save()
+                        if (updatedUser.filename !== request.file.filename)
+                        {
+                            updatedUser.filename = request.file.filename
+                            updatedUser.imageUrl = request.file.path
+                            updatedUser.save()
+                        }
                     }
                     
                     //return response success

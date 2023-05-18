@@ -201,7 +201,7 @@ function generateToken(userRegistered) {
     if (userRegistered.role == "Admin") {
         //create access token for authorization using jwt
         accessToken = jwt.sign({userId, name, email}, process.env.ADMIN_ACCESS_TOKEN_SECRET, {
-            expiresIn: '15m'
+            expiresIn: '1d'
         })
 
         //create refresh token using jwt
@@ -211,7 +211,7 @@ function generateToken(userRegistered) {
     }else{
         //create access token for authorization using jwt
         accessToken = jwt.sign({userId, name, email}, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '15m'
+            expiresIn: '1d'
         })
 
         //create refresh token using jwt
