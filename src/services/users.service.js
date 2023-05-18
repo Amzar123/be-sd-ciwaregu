@@ -251,7 +251,6 @@ function generateToken(userRegistered) {
 
 export default {
     getAllUser,
-    getPpdb,
     registerUsers,
     loginUsers,
     logoutUsers
