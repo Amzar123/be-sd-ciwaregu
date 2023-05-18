@@ -8,18 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
-
-// import { Galleries } from './src/models/galleries.model.js';
-// import { Programs } from "./src/models/programs.model.js";
-// import { Teachers } from "./src/models/teachers.model.js";
-// import { Users } from "./src/models/users.model.js";
-// import { Students } from "./src/models/students.model.js";
-// import { Awards } from "./src/models/awards.model.js";
-// import { Candidate } from "./src/models/candidate.model.js";
-// import { Family } from "./src/models/family.model.js";
-// import { Guardian } from "./src/models/guardian.model.js";
-// import { Document } from "./src/models/document.model.js";
+const port = process.env.PORT || 8000;
 
 
 app.use(bodyParser.json());
@@ -32,27 +21,6 @@ app.use(cors({
   origin: '*',
   allowedHeaders: ['Content-Type', 'Authorization']
 }))
-
-// connect to database
-// try {
-//   // db.authenticate();
-//   console.log('Database Connected....');
-
-//   /* optional create table into database using schema */
-//   // await Galleries.sync(); 
-//   // await Programs.sync();
-//   // await Users.sync();
-//   // await Teachers.sync();
-//   // await Students.sync();
-//   // await Awards.sync();
-//   // await Candidate.sync();
-//   // await Family.sync();
-//   // await Guardian.sync();
-//   // await Document.sync();
-
-// } catch (error) {
-//   console.error(error); 
-// }
 
 app.use(router);
 app.use(cookieParser())

@@ -6,14 +6,6 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 
 //get all users function
-async function getPpdb(){
-    try {
-        return "Halaman PPDB"
-    } catch (error) {
-        return error
-    }
-}
-
 async function getAllUser(){
     var responseError = new ResponseClass.ErrorResponse()
     var responseSuccess = new ResponseClass.SuccessResponse()
