@@ -56,7 +56,7 @@ async function updateProfile(request) {
 
     //SELECT ... where email = requestbody.email LIMIT 1
     const userRegistered = await Users.findOne({
-        where: { email: email}
+        where: { email: email }
     })
 
     if (userRegistered !== null && email !== userRegistered.email) {
@@ -90,17 +90,15 @@ async function updateProfile(request) {
                 }
 
                 try {
-                    // Find the existing gallery by its id using the Galleries model
-                    const existingGallery = await Galleries.findByPk(galleryId);
-
-                    //update user to database
-                    const updatedUser = await existingGallery.update(
+                    
+                    await userRegistered.update(
                         {
                             name: name,
                             email: email,
                             password: newHashPass,
                             address: address,
-                            tanggalLahir: tanggalLahir},
+                            tanggalLahir: tanggalLahir
+                        },
                         { 
                             where: { 
                                 id: userId
@@ -109,11 +107,11 @@ async function updateProfile(request) {
                     );
 
                     if (request.file) {
-                        if (updatedUser.filename !== request.file.filename)
+                        if (userRegistered.filename !== request.file.filename)
                         {
-                            updatedUser.filename = request.file.filename
-                            updatedUser.imageUrl = request.file.path
-                            updatedUser.save()
+                            userRegistered.filename = request.file.filename
+                            userRegistered.imageUrl = request.file.path
+                            userRegistered.save()
                         }
                     }
                     
@@ -136,14 +134,25 @@ async function updateProfile(request) {
         try {
 
             //update user to database
-            await Users.update(
-                {name: name,
-                email: email,
-                imageUrl: imageUrl,
-                address: address,
-                tanggalLahir: tanggalLahir},
-                { where: { id: userId }}
+            await userRegistered.update(
+                {
+                    name: name,
+                    email: email,
+                    address: address,
+                    tanggalLahir: tanggalLahir},
+                {
+                    where: { id: userId }
+                }
             );
+
+            if (request.file) {
+                if (userRegistered.filename !== request.file.filename)
+                {
+                    userRegistered.filename = request.file.filename
+                    userRegistered.imageUrl = request.file.path
+                    userRegistered.save()
+                }
+            }
             
             //return response success
             responseSuccess.message = `Update data with id: ${userId} Sucess`
